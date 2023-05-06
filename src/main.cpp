@@ -1,9 +1,36 @@
 //Includes
-  
-  #include <Arduino.h>
-  #include <string.h>
-  #include "hard_defs.h"
-  #include "soft_defs.h"
+#include <Arduino.h>
+#include <string.h>
+//Four digits display 
+#include <TM1637Display.h>
+//Six digits display
+#include <TM1637TinyDisplay6.h>
+//Oled
+#include <U8g2lib.h>
+#include "hard_defs.h"
+#include "soft_defs.h"
+
+#define U8X8_HAVE_HW_SPI //uncomment this line if have a SPI
+#define U8X8_HAVE_HW_I2C //uncomment this line if have a I2C
+
+#ifdef U8X8_HAVE_HW_SPI
+#include <SPI.h>
+#endif
+#ifdef U8X8_HAVE_HW_I2C
+#include <Wire.h>
+#endif
+
+//Four digits display
+TM1637Display Four(Fourdigits_CLK, Fourdigits_DIO);
+
+//Six digits display
+TM1637TinyDisplay6 Six(Sixdigits_CLK, Sixdigits_DIO);
+
+//OLED
+U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0,SCLK_OLED, SDA_OLED, U8X8_PIN_NONE);   // ESP32 Thing, pure SW emulated I2C
+
+//led
+HardwareSerial Receiver(2); // Define a Serial port instance called 'Receiver' using serial port 2
 
 /*General Functions*/
 void animacao();
