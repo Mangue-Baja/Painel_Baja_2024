@@ -10,8 +10,8 @@
 #include "hard_defs.h"
 #include "soft_defs.h"
 
-#define U8X8_HAVE_HW_SPI //uncomment this line if have a SPI
-#define U8X8_HAVE_HW_I2C //uncomment this line if have a I2C
+#define U8X8_HAVE_HW_SPI //uncomment this line if dont have a SPI
+#define U8X8_HAVE_HW_I2C //uncomment this line if dont have a I2C
 
 #ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
