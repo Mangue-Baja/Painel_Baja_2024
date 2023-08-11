@@ -27,7 +27,7 @@
 
 #define mottemp_led 13         // led de aviso de temperatura do motor
 #define cvttemp_led 12         // led de aviso de temperatura do CVT
-#define SOT_Led     26         // led de aviso da telemetria ativa(LOW) ou não(HIGH)
+#define Bat_LED     26         // led de aviso da porcentagem da bateria
 
 //botões e chaves para interações com o usuario no carro
 #define BOTAO 23                //verde

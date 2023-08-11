@@ -62,7 +62,7 @@ void setup()
   pinMode(combust_5,OUTPUT);
 
   pinMode(cvttemp_led,OUTPUT);
-  pinMode(SOT_Led,OUTPUT);
+  pinMode(Bat_LED,OUTPUT);
   pinMode(mottemp_led,OUTPUT);
   pinMode(LED_BUILTIN,OUTPUT);
     
@@ -169,7 +169,9 @@ void animacao()
     u8g2.setFont(u8g2_font_7x13_t_cyrillic);    //Fonte com 9 pixels de altura
     u8g2.drawStr(110,DisplayHight-1,"'C");      //motor
     u8g2.drawStr(30,DisplayHight-1,"'C");       //cvt
-    u8g2.drawStr(86,33,"km/h");
+    u8g2.drawStr(86,33,"Km/h");
+    
+    (Var.SOT) ? u8g2.drawStr(10,20,"BOX") : u8g2.drawStr(10,20,"   ");
     
     //Velocimetro
     u8g2.setFont(u8g2_font_inb30_mn);           //Fonte com 27 pixels de altura
@@ -282,15 +284,14 @@ void LedEmergency()
   }
 
   //controle da luz de emergencia da bateria
-  if (Var.battery>20) 
-  {
-    digitalWrite(LED_BUILTIN, LOW); 
-  } else {
-    analogWrite(LED_BUILTIN, emergency_led_state*intensity_led_brightness);
-  }
+  (Var.battery>20) ? digitalWrite(Bat_LED, LOW) : analogWrite(Bat_LED, emergency_led_state*intensity_led_brightness);
 
-  //Controle da led da telemetria
-  (Var.SOT) ? digitalWrite(SOT_Led, LOW) : analogWrite(SOT_Led, intensity_led_brightness);
+  //Controle da telemetria
+  /*if (!Var.SOT)
+  {
+    u8g2.setFont(u8g2_font_crox2c_tn);
+    
+  }*/ 
 };
       
 void led_state(uint8_t pin,uint8_t estado)
