@@ -10,16 +10,13 @@
 
 HardwareSerial Receiver(2); // Define a Serial port instance called 'Receiver' using serial port 2
 
-/* Global variables */
-uint8_t comb_pin[5];
-
 /* Interrupts routine */
 void ticker2HzISR();
 void ticker5HzISR();
-void buttonInterrupt();
-void switchInterrupt();
-void potenciometro_ISR();
+void buttonInterruptISR();
+void switchInterruptISR();
 /* General Functions */
+void Pinconfig();
 void animacao();
 void fourDigits();
 void sixDigits();
@@ -48,12 +45,6 @@ void setup()
 
   //setup OLED
   u8g2.begin();
-
-  comb_pin[0] = combust_1;
-  comb_pin[1] = combust_2;
-  comb_pin[2] = combust_3;
-  comb_pin[3] = combust_4;
-  comb_pin[4] = combust_5;
   
   Var.velocidade = 0;
   Var.rpm = 0;
@@ -61,32 +52,9 @@ void setup()
   Var.combustivel = 0;
   Var.temp_cvt = 0;
   Var.temp_motor = 0;
-  Var.SOT = 0;
+  Var.SOT = false;
 
-  //Leds
-  pinMode(combust_1,OUTPUT);
-  pinMode(combust_2,OUTPUT);
-  pinMode(combust_3,OUTPUT);
-  pinMode(combust_4,OUTPUT);
-  pinMode(combust_5,OUTPUT);
-
-  pinMode(cvttemp_led,OUTPUT);
-  pinMode(Bat_LED,OUTPUT);
-  pinMode(mottemp_led,OUTPUT);
-  pinMode(LED_BUILTIN,OUTPUT);
-    
-  //botões e potenciometros
-  pinMode(BOTAO, INPUT_PULLUP);
-  pinMode(CHAVE, INPUT);
-  pinMode(POTENCIOMETRO, INPUT);
-
-  //Tickers
-  ticker2Hz.attach_ms(500,ticker2HzISR);
-  ticker5Hz.attach_ms(200,ticker5HzISR);
-
-  //attachs
-  attachInterrupt(digitalPinToInterrupt(BOTAO), buttonInterrupt, RISING);
-  attachInterrupt(digitalPinToInterrupt(CHAVE), switchInterrupt, CHANGE);
+  Pinconfig();
 
   Switch.Pin = CHAVE;
   Button.Pin = BOTAO;
@@ -100,65 +68,85 @@ void setup()
 void loop() 
 {
   temporizador();   //relogio do enduro
-  potenciometro_ISR();   //função para ler o potenciometro
+  potenciometro = analogRead(POTENCIOMETRO);   //função para ler o potenciometro
 
   //Aqui tive que colocar em um if else pelo fato de aparecer um bug quando colocado o recebedor() no mesmo loop da animacao()
   if (Receiver.available()>0 )
   {    
-
     recebedor();      //recebe os dados da serial pela ECU dianteira
-
   } else {
-
     Leds();           //função que contem todos os leds
     animacao();       //animação do Oled
   }
   Var_0 = Var;
 };
 
+void Pinconfig()
+{
+  //Leds
+  pinMode(combust_1, OUTPUT);
+  pinMode(combust_2, OUTPUT);
+  pinMode(combust_3, OUTPUT);
+  pinMode(combust_4, OUTPUT);
+  pinMode(combust_5, OUTPUT);
+
+  pinMode(cvttemp_led, OUTPUT);
+  pinMode(Bat_LED, OUTPUT);
+  pinMode(mottemp_led, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+    
+  //botões e potenciometros
+  pinMode(BOTAO, INPUT_PULLUP);
+  pinMode(CHAVE, INPUT);
+  pinMode(POTENCIOMETRO, INPUT);
+
+  //Tickers
+  ticker2Hz.attach(0.5, ticker2HzISR);
+  ticker5Hz.attach_ms(0.2, ticker5HzISR);
+
+  //attachs
+  attachInterrupt(digitalPinToInterrupt(BOTAO), buttonInterruptISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(CHAVE), switchInterruptISR, CHANGE);
+
+  return;
+};
 //Funções que os tickers irão fazer
 void ticker2HzISR() 
 {  
   emergency_led_state = !emergency_led_state;
 
-  (emergency_led_state) ? boolean1HZ = true : 0;
-
+  if (emergency_led_state) boolean1HZ=true;
 };
 
 void ticker5HzISR()
-{
-  
+{ 
   boolean5HZ = true;
-
 };
 
 //Declaração das funções para a maquina de estados fulera
 void Leds()
 {
-  if (boolean5HZ == true)
+  if (boolean5HZ)
   {
-    //LedFuel();
-    
+    LedFuel();
     fourDigits();
     sixDigits();
-    
     LedEmergency();
-
     boolean5HZ = false;
   }
 }; 
   
 void animacao()
 {                                                                                                                                                                          
-  bool chaodetras = 0;
+  bool chaodetras = false;
   static char Speed[6];
   static char T_cvt[6];
   static char T_motor[6];
 
   debounceSpeed();
-  strcpy( Speed, u8x8_u8toa(Var_0.velocidade, 2));    //variavel da velocidade que será exibida no Oled com 2 digitos
-  strcpy( T_cvt, u8x8_u8toa(Var.temp_cvt, 3));        //variavel da temperatura do motor que será exibida no Oled com 3 digitos
-  strcpy( T_motor, u8x8_u8toa(Var.temp_motor, 3));    //variavel da temperatura do motor que será exibida no Oled com 3 digitos
+  strcpy(Speed, u8x8_u8toa(Var_0.velocidade, 2));    //variavel da velocidade que será exibida no Oled com 2 digitos
+  strcpy(T_cvt, u8x8_u8toa(Var.temp_cvt, 3));        //variavel da temperatura do motor que será exibida no Oled com 3 digitos
+  strcpy(T_motor, u8x8_u8toa(Var.temp_motor, 3));    //variavel da temperatura do motor que será exibida no Oled com 3 digitos
 
   u8g2.firstPage();
   do {
@@ -195,7 +183,8 @@ void animacao()
 //Funcões dos Leds
 void LedFuel()
 {
-   
+  byte intensity_led_brightness = map(potenciometro, 0, 4095, 1, 255); //controle de brilho dos led de emergencia
+
   //(*) -> ligado
   //( ) -> desligado
   //(*| ) -> pisca a luz de emergencia
@@ -214,13 +203,20 @@ void LedFuel()
       //gas_led3_state = emergency_led_state;        //(*)
       //gas_led4_state = emergency_led_state;        //(*)
       //gas_led5_state = emergency_led_state;        //(*)
-      led_state(comb_pin, 5); //Referente as 5 leds acessas
+      analogWrite(combust_1, intensity_led_brightness);
+      analogWrite(combust_2, intensity_led_brightness);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (5):
       //gas_led1_state = false;       //( )
       //Os outros 4 leds estão ligados(*)(*)(*)(*)
-      led_state(comb_pin, 4); //Referente as 4 leds acessas
+      analogWrite(combust_2, intensity_led_brightness);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (3):
@@ -228,7 +224,9 @@ void LedFuel()
       //gas_led1_state = false;       //( )
       //gas_led2_state = false;       //( )
       //Os outros 3 leds estão ligados(*)(*)(*)
-      led_state(comb_pin, 3); //Referente as 3 leds acessas
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
     
     case (2):
@@ -237,8 +235,8 @@ void LedFuel()
       //gas_led2_state = false;       //( )
       //gas_led3_state = false;       //( )
       //Os outros 2 leds estão ligados(*)(*)
-      led_state(comb_pin, 2); //Referente as 2 leds acessas
-
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (1):
@@ -248,14 +246,13 @@ void LedFuel()
       //gas_led3_state = false;       //( )
       //gas_led4_state = false;       //( )
       //gas_led5_state = emergency_led_state;   //(*| )pisca
-      led_state(comb_pin, true); //true(1) significa que está na reserva
+      analogWrite(combust_5, emergency_led_state*intensity_led_brightness);
     break;
   }
 };
 
 void LedEmergency()
 {
-    
   //Leds de Emergência
   //O potenciometro foi feito uma gabiarra horrorosa colocando um poteciometro em paralelo com um outro resistor
   //Se possivel alterar a alimentação do potenciometro no deskboar para 3.3V
@@ -284,29 +281,8 @@ void LedEmergency()
   //controle da luz de emergencia da bateria
   (Var.battery>20) ? digitalWrite(Bat_LED, LOW) : analogWrite(Bat_LED, emergency_led_state*intensity_led_brightness);
 
-  //Controle da telemetria
-  /*if (!Var.SOT)
-  {
-    u8g2.setFont(u8g2_font_crox2c_tn);
-    
-  }*/ 
 };
       
-void led_state(uint8_t pin[], uint8_t estado)
-{
-  //função para o controle dos leds
-  byte intensity_led_brightness = map(potenciometro, 0, 4095, 1, 255); //controle de brilho dos led de emergencia     
-
-  for (byte i=(5-estado); i<5; i++)
-  {
-    if (estado)
-    {
-      analogWrite(pin[i], emergency_led_state*intensity_led_brightness);
-    }
-    analogWrite(pin[i], HIGH*intensity_led_brightness);
-  }
-};
-
 //Função dos displays de 7 segmentos  
 void fourDigits() 
 {
@@ -316,7 +292,7 @@ void fourDigits()
   
   //setup Four digits display
   Four.setBrightness(intensity_brightness);   //controle de brilho do display
-  Four.showNumberDecEx(Var.rpm*60, 0, true);  //valor exibido no display    o true é para se é para considerar os 0s
+  Four.showNumberDecEx(Var.rpm, 0, true);  //valor exibido no display    o true é para se é para considerar os 0s
 
 };
     
@@ -347,9 +323,9 @@ void sixDigits()
     case TEMPO_DE_ENDURO:
       //Loop do Six digits display
 
-      Six.showNumberDec(Enduro.horas, dots, true,2,0);
-      Six.showNumberDec(Enduro.minutos,dots, true,2,2);
-      Six.showNumberDec(Enduro.segundos,0, true,2,4);
+      Six.showNumberDec(Enduro.horas, dots, true, 2, 0);
+      Six.showNumberDec(Enduro.minutos,dots, true, 2, 2);
+      Six.showNumberDec(Enduro.segundos, 0, true, 2, 4);
       break;
       
     case CRONOMETRO:
@@ -361,10 +337,10 @@ void sixDigits()
       //Cronometrar volta
       dots = 0b01010100;
 
-      Six.showNumber(0,false,2,0);
-      Six.showNumberDec(Volta.minutos,dots, true ,2,1);
-      Six.showNumberDec(Volta.segundos,dots, true ,2,3);
-      Six.showNumberDec(0,dots,false,2,5);
+      Six.showNumber(0, false, 2, 0);
+      Six.showNumberDec(Volta.minutos, dots, true , 2, 1);
+      Six.showNumberDec(Volta.segundos, dots, true , 2, 3);
+      Six.showNumberDec(0, dots, false, 2, 5);
       break;
 
     case DELTA_CRONOMETRO:
@@ -375,13 +351,13 @@ void sixDigits()
       {  
         Delta.tempo_volta_ms = ultima_volta.tempo_volta_ms - penultima_volta.tempo_volta_ms; 
         
-        Six.showNumberDec(penultima_volta.minutos, dots, true ,1,0);
-        Six.showNumberDec(penultima_volta.segundos, dots, true ,2,1);
+        Six.showNumberDec(penultima_volta.minutos, dots, true , 1, 0);
+        Six.showNumberDec(penultima_volta.segundos, dots, true , 2, 1);
       
         Delta.segundos = Delta.tempo_volta_ms%60;
 
-        Six.showNumber(0,false,1,3);
-        Six.showNumberDec(Delta.segundos, dots, true ,2,4);
+        Six.showNumber(0, false, 1, 3);
+        Six.showNumberDec(Delta.segundos, dots, true , 2, 4);
       }
 
       else if(ultima_volta.tempo_volta_ms < penultima_volta.tempo_volta_ms)
@@ -390,13 +366,13 @@ void sixDigits()
 
         //Six.showNumber(Delta.segundos, true ,3,3);
 
-        Six.showNumberDec(penultima_volta.minutos, dots, true ,1,0);
-        Six.showNumberDec(penultima_volta.segundos, dots, true ,2,1);
+        Six.showNumberDec(penultima_volta.minutos, dots, true, 1, 0);
+        Six.showNumberDec(penultima_volta.segundos, dots, true , 2, 1);
       
         Delta.segundos = Delta.tempo_volta_ms%60;
         
         Six.showString("-", 1, 3, 0);
-        Six.showNumberDec(Delta.segundos, dots, true ,2,4);
+        Six.showNumberDec(Delta.segundos, dots, true, 2, 4);
       }      
       six_digits_state = CRONOMETRO;
       break;
@@ -411,7 +387,8 @@ void transformador_time_current(Tempo* T)
   uint8_t corrector = ((millis() - T->time_current)/100)%10;
 
   T->tempo_volta_ms = (millis() - T->time_current)/1000;
-  if(corrector > 4) T->segundos = T->tempo_volta_ms%60 + 1;
+
+  if (corrector > 4) T->segundos = T->tempo_volta_ms%60 + 1;
   else T-> segundos = T->tempo_volta_ms%60;
   
 
@@ -448,19 +425,12 @@ void temporizador()
         }
       }
     }
-  boolean1HZ = false;
+    boolean1HZ = false;
   }
 };
 
-void potenciometro_ISR()
-{
-  
-  potenciometro = analogRead(POTENCIOMETRO);
-
-};
-
 //função do que o botão
-void buttonInterrupt()
+void buttonInterruptISR()
 {
   if (Switch.buttonState)
   {
@@ -492,26 +462,23 @@ void buttonInterrupt()
 };
     
 //função do que do interruptor
-void switchInterrupt()
+void switchInterruptISR()
 {
   if ((millis() - Switch.lastDebounceTime) > debounceDelay) 
   {
     
     Switch.buttonState = digitalRead(Switch.Pin);
 
-    if (Switch.buttonState == 0)
+    if (Switch.buttonState==0)
     {
-      
       six_digits_state = TEMPO_DE_ENDURO;
-      
     }
-    if(Switch.buttonState == 1)
-    {
 
+    if (Switch.buttonState==1)
+    {
       six_digits_state = CRONOMETRO;
       Button.mode = 0;
-      
-    };
+    }
     Volta.time_current = millis();
   }
   Switch.lastDebounceTime = millis();
@@ -639,13 +606,13 @@ void recebedor()
 
     dado_arr[byteCount] = Receiver.read(); //então os dados em bits que estão chegnado da serial é colocado no array
 
-    if(byteCount == 0)     {     Serial.print("velocidade = ");    Serial.println(Var.velocidade);}
-    else if(byteCount == 1){     Serial.print("rpm = ");           Serial.println(Var.rpm);}
-    else if(byteCount == 2){     Serial.print("battery = ");       Serial.println(Var.battery);}
-    else if(byteCount == 3){     Serial.print("fuel = ");          Serial.println(Var.combustivel);}
-    else if(byteCount == 4){     Serial.print("temp cvt = ");      Serial.println(Var.temp_cvt);}
-    else if(byteCount == 5){     Serial.print("temp motor = ");    Serial.println(Var.temp_motor);}
-    else if(byteCount == 6){     Serial.print("SOT = ");           Serial.println(Var.SOT);}
+    if(byteCount==0)      Serial.printf("\r\nvelocidade = %d\r\n", Var.velocidade);
+    else if(byteCount==1) Serial.printf("\r\nrpm = %d\r\n", Var.rpm);
+    else if(byteCount==2) Serial.printf("\r\nSOC = %d\r\n", Var.rpm);
+    else if(byteCount==3) Serial.printf("\r\nfuel level = %d\r\n", Var.combustivel);
+    else if(byteCount==4) Serial.printf("\r\ntemp motor = %d\r\n", Var.temp_motor);
+    else if(byteCount==5) Serial.printf("\r\ntemp CVT = %d\r\n", Var.temp_cvt);
+    else if(byteCount==6) Serial.printf("\r\nSOT = %d\r\n", Var.SOT);
     
     byteCount++;
   }
