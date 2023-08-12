@@ -10,6 +10,9 @@
 
 HardwareSerial Receiver(2); // Define a Serial port instance called 'Receiver' using serial port 2
 
+/* Global variables */
+uint8_t comb_pin[5];
+
 /* Interrupts routine */
 void ticker2HzISR();
 void ticker5HzISR();
@@ -29,7 +32,7 @@ void Battery_box(int cor);
 void LedFuel();
 void LedEmergency();
 void led_state();
-void led_state(uint8_t pin, uint8_t estado);
+void led_state(uint8_t pin[], uint8_t estado);
 void transformador_time_current(Tempo* T);
 void all_lines(int cor);
 void doublelines(int x1,int y1,int x2,int y2,int quantidade);
@@ -44,7 +47,13 @@ void setup()
   Six.setBrightness(BRIGHT_HIGH);
 
   //setup OLED
-  u8g2.begin(); 
+  u8g2.begin();
+
+  comb_pin[0] = combust_1;
+  comb_pin[1] = combust_2;
+  comb_pin[2] = combust_3;
+  comb_pin[3] = combust_4;
+  comb_pin[4] = combust_5;
   
   Var.velocidade = 0;
   Var.rpm = 0;
@@ -186,73 +195,62 @@ void animacao()
 //Funcões dos Leds
 void LedFuel()
 {
-  
+   
   //(*) -> ligado
   //( ) -> desligado
   //(*| ) -> pisca a luz de emergencia
-  bool gas_led1_state = true;        //(*)
-  bool gas_led2_state = true;        //(*)
-  bool gas_led3_state = true;        //(*)
-  bool gas_led4_state = true;        //(*)
-  bool gas_led5_state = true;        //(*)
+  //bool gas_led1_state = true;        //(*)
+  //bool gas_led2_state = true;        //(*)
+  //bool gas_led3_state = true;        //(*)
+  //bool gas_led4_state = true;        //(*)
+  //bool gas_led5_state = true;        //(*)
 
-  switch ((int)(Var.combustivel-1)/20) 
+  switch ((int)(Var.combustivel/10)) 
   {
-    case (4):
+    case (10):
       //todos os leds estão ligados (*)(*)(*)(*)(*)
+      //gas_led1_state = emergency_led_state;        //(*)
+      //gas_led2_state = emergency_led_state;        //(*)
+      //gas_led3_state = emergency_led_state;        //(*)
+      //gas_led4_state = emergency_led_state;        //(*)
+      //gas_led5_state = emergency_led_state;        //(*)
+      led_state(comb_pin, 5); //Referente as 5 leds acessas
+    break;
+
+    case (5):
+      //gas_led1_state = false;       //( )
+      //Os outros 4 leds estão ligados(*)(*)(*)(*)
+      led_state(comb_pin, 4); //Referente as 4 leds acessas
     break;
 
     case (3):
-      gas_led1_state = false;       //( )
-      //Os outros 4 leds estão ligados(*)(*)(*)(*)
-    break;
 
+      //gas_led1_state = false;       //( )
+      //gas_led2_state = false;       //( )
+      //Os outros 3 leds estão ligados(*)(*)(*)
+      led_state(comb_pin, 3); //Referente as 3 leds acessas
+    break;
+    
     case (2):
 
-      gas_led1_state = false;       //( )
-      gas_led2_state = false;       //( )
-      //Os outros 3 leds estão ligados(*)(*)(*)
+      //gas_led1_state = false;       //( )
+      //gas_led2_state = false;       //( )
+      //gas_led3_state = false;       //( )
+      //Os outros 2 leds estão ligados(*)(*)
+      led_state(comb_pin, 2); //Referente as 2 leds acessas
 
     break;
-    
+
     case (1):
 
-      gas_led1_state = false;       //( )
-      gas_led2_state = false;       //( )
-      gas_led3_state = false;       //( )
-      //Os outros 2 leds estão ligados(*)(*)
-
+      //gas_led1_state = false;       //( )
+      //gas_led2_state = false;       //( )
+      //gas_led3_state = false;       //( )
+      //gas_led4_state = false;       //( )
+      //gas_led5_state = emergency_led_state;   //(*| )pisca
+      led_state(comb_pin, true); //true(1) significa que está na reserva
     break;
-
-    case (0):
-
-      gas_led1_state = false;       //( )
-      gas_led2_state = false;       //( )
-      gas_led3_state = false;       //( )
-      gas_led4_state = false;       //( )
-      gas_led5_state = emergency_led_state;   //(*| )pisca
-
-      
-    break;
-
-    default:
-    
-      gas_led1_state = emergency_led_state;        //(*)
-      gas_led2_state = emergency_led_state;        //(*)
-      gas_led3_state = emergency_led_state;        //(*)
-      gas_led4_state = emergency_led_state;        //(*)
-      gas_led5_state = emergency_led_state;        //(*)
-      
-    break;
-
   }
-
-  led_state(combust_1,gas_led1_state);
-  led_state(combust_2,gas_led2_state);
-  led_state(combust_3,gas_led3_state);
-  led_state(combust_4,gas_led4_state);
-  led_state(combust_5,gas_led5_state);
-
 };
 
 void LedEmergency()
@@ -294,20 +292,18 @@ void LedEmergency()
   }*/ 
 };
       
-void led_state(uint8_t pin,uint8_t estado)
+void led_state(uint8_t pin[], uint8_t estado)
 {
   //função para o controle dos leds
-  //com certeza tem maneira mais inteligente de se escrever isso aqui     
+  byte intensity_led_brightness = map(potenciometro, 0, 4095, 1, 255); //controle de brilho dos led de emergencia     
 
-  if (estado == 0)
+  for (byte i=(5-estado); i<5; i++)
   {
-
-    digitalWrite(pin, LOW);
-
-  } else {
-    uint8_t intensity_led_brightness = map(potenciometro,0,4095,1,255);
-    analogWrite(pin, intensity_led_brightness*estado);
-
+    if (estado)
+    {
+      analogWrite(pin[i], emergency_led_state*intensity_led_brightness);
+    }
+    analogWrite(pin[i], HIGH*intensity_led_brightness);
   }
 };
 
