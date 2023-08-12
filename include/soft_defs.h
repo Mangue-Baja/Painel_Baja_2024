@@ -35,15 +35,13 @@ Perifericos Button;
 //Struct para receber todos os dados do painel
 //caso deseja adicionar um dado no painel  alterar não só na variavél quanto na ECU dianteira
 typedef struct {
-
-  uint16_t velocidade;
-  uint16_t rpm;
-  uint16_t battery;
-  uint16_t combustivel;
-  uint16_t temp_cvt;
-  uint16_t temp_motor;
-  uint16_t SOT;
-
+    uint16_t velocidade;
+    uint16_t rpm;
+    uint16_t battery;
+    uint16_t combustivel;
+    uint16_t temp_cvt;
+    uint16_t temp_motor;
+    uint16_t telemetry;
 } Txtmng;
 
 Txtmng Var;

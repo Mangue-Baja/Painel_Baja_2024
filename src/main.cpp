@@ -52,7 +52,7 @@ void setup()
   Var.combustivel = 0;
   Var.temp_cvt = 0;
   Var.temp_motor = 0;
-  Var.SOT = false;
+  Var.telemetry = false;
 
   Pinconfig();
 
@@ -168,7 +168,7 @@ void animacao()
     u8g2.drawStr(30,DisplayHight-1,"'C");       //cvt
     u8g2.drawStr(86,33,"Km/h");
     
-    (Var.SOT) ? u8g2.drawStr(10,20,"BOX") : u8g2.drawStr(10,20,"   ");
+    (Var.telemetry) ? u8g2.drawStr(10,20,"BOX") : u8g2.drawStr(10,20,"   ");
     
     //Velocimetro
     u8g2.setFont(u8g2_font_inb30_mn);           //Fonte com 27 pixels de altura
@@ -494,18 +494,18 @@ void doublelines(int x1,int y1,int x2,int y2,int quantidade)
   
   if (quantidade >= 2)
   {
-  //linha da direita
-  u8g2.drawLine(x1+1,y1,x2+1,y2);
-  //linha da esquerda
-  u8g2.drawLine(DisplayWidth-x1-1,y1,DisplayWidth-x2-1,y2);
+    //linha da direita
+    u8g2.drawLine(x1+1,y1,x2+1,y2);
+    //linha da esquerda
+    u8g2.drawLine(DisplayWidth-x1-1,y1,DisplayWidth-x2-1,y2);
   }
 
   if (quantidade >= 3)
   {
-  //linha da direita
-  u8g2.drawLine(x1+2,y1,x2+2,y2);
-  //linha da esquerda
-  u8g2.drawLine(DisplayWidth-x1-2,y1,DisplayWidth-x2-2,y2);
+    //linha da direita
+    u8g2.drawLine(x1+2,y1,x2+2,y2);
+    //linha da esquerda
+    u8g2.drawLine(DisplayWidth-x1-2,y1,DisplayWidth-x2-2,y2);
   }
 };
 
@@ -612,7 +612,7 @@ void recebedor()
     else if(byteCount==3) Serial.printf("\r\nfuel level = %d\r\n", Var.combustivel);
     else if(byteCount==4) Serial.printf("\r\ntemp motor = %d\r\n", Var.temp_motor);
     else if(byteCount==5) Serial.printf("\r\ntemp CVT = %d\r\n", Var.temp_cvt);
-    else if(byteCount==6) Serial.printf("\r\nSOT = %d\r\n", Var.SOT);
+    else if(byteCount==6) Serial.printf("\r\nSOT = %d\r\n", Var.telemetry);
     
     byteCount++;
   }
