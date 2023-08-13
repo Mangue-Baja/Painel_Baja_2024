@@ -1,7 +1,11 @@
 #ifndef SOFT_DEF
 #define SOFT_DEF
 
-#include <Ticker.h>
+#include <Arduino.h>
+#include <string.h>
+#include <TM1637Display.h>
+#include <TM1637TinyDisplay6.h>
+#include <U8g2lib.h>
 
 //Variaveis
 //Srtucts
@@ -35,34 +39,21 @@ Perifericos Button;
 //Struct para receber todos os dados do painel
 //caso deseja adicionar um dado no painel  alterar não só na variavél quanto na ECU dianteira
 typedef struct {
-    uint16_t velocidade;
-    uint16_t rpm;
-    uint16_t battery;
-    uint16_t combustivel;
-    uint16_t temp_cvt;
-    uint16_t temp_motor;
-    uint16_t telemetry;
+  uint16_t velocidade;
+  uint16_t rpm;
+  uint16_t battery;
+  uint16_t combustivel;
+  uint16_t temp_cvt;
+  uint16_t temp_motor;
+  uint16_t telemetry;
 } Txtmng;
 
-Txtmng Var;
-Txtmng Var_0;
-uint16_t dado_arr[sizeof(Txtmng)];     //array que recebe os dados em Bits da ECU dianteira 
-
-uint16_t potenciometro;
-
 bool emergency_led_state;
-
 bool boolean1HZ;
 bool boolean5HZ;
 
 unsigned long lastDebounceTime = 0;
 const int debounceDelay = 200;          //tempo em millisegundos para debounce dos botões
-
-//Inicializadores 
-Ticker ticker2Hz;       //iniciando os tickers
-Ticker ticker5Hz;
-
-//File file
 
 typedef enum PROGMEM {
   TEMPO_DE_ENDURO, 
