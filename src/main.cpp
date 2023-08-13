@@ -27,12 +27,10 @@ void Leds();
 void debounceSpeed();
 void Battery_box(int cor);
 void LedFuel();
-void LedEmergency();
-void led_state();
-void led_state(uint8_t pin[], uint8_t estado);
 void transformador_time_current(Tempo* T);
-void all_lines(int cor);
-void doublelines(int x1,int y1,int x2,int y2,int quantidade);
+//void led_state(uint8_t pin[], uint8_t estado);
+//void all_lines(int cor);
+//void doublelines(int x1,int y1,int x2,int y2,int quantidade);
 
 //Setup
 void setup()
@@ -487,7 +485,7 @@ void switchInterruptISR()
 //Funcões para desing do Oled(espero que você saiba o basico de GA para editar isso)
 //lembrando que se desenhar muitos objetos no Oled ele vai ficar cada vez mais lento para executar
 
-void doublelines(int x1,int y1,int x2,int y2,int quantidade)
+/*void doublelines(int x1,int y1,int x2,int y2,int quantidade)
 {  
   u8g2.drawLine(x1,y1,x2,y2);
   u8g2.drawLine(DisplayWidth-x1,y1,DisplayWidth-x2,y2);
@@ -507,15 +505,15 @@ void doublelines(int x1,int y1,int x2,int y2,int quantidade)
     //linha da esquerda
     u8g2.drawLine(DisplayWidth-x1-2,y1,DisplayWidth-x2-2,y2);
   }
-};
+};*/
 
-void all_lines(int cor)
+/*void all_lines(int cor)
 {
   u8g2.setDrawColor(cor);
   u8g2.drawBox(40, DisplayHight-20, 40, 10);
 
   u8g2.setDrawColor(2);
-};
+};*/
 
 void Battery_box(int cor)
 {  
