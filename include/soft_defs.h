@@ -1,14 +1,14 @@
-#ifndef SOFT_DEF
-#define SOFT_DEF
+#ifndef SOFT_DEFS_H
+#define SOFT_DEFS_H
 
-#include <Arduino.h>
-#include <string.h>
-#include <TM1637Display.h>
-#include <TM1637TinyDisplay6.h>
-#include <U8g2lib.h>
+#ifdef SOFT_DEFS_H
+  #include <Arduino.h>
+  #include <string.h>
+  #include <TM1637Display.h>
+  #include <TM1637TinyDisplay6.h>
+  #include <U8g2lib.h>
+#endif
 
-//Variaveis
-//Srtucts
 typedef struct {
   uint16_t segundos = 0;
   uint8_t minutos = 0;
@@ -34,7 +34,6 @@ typedef struct {
 
 Perifericos Switch;
 Perifericos Button;
-
 
 //Struct para receber todos os dados do painel
 //caso deseja adicionar um dado no painel  alterar não só na variavél quanto na ECU dianteira

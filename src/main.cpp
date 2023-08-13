@@ -15,8 +15,8 @@ Ticker ticker5Hz;
 Txtmng Var, Var_0;
 uint16_t potenciometro;
 uint16_t dado_arr[sizeof(Txtmng)];     //array que recebe os dados em Bits da ECU dianteira 
-byte comb_pin[5];
-byte intensity_led_brightness;
+uint8_t comb_pin[5];
+uint8_t intensity_led_brightness;
 
 /* Interrupts routine */
 void ticker2HzISR();
@@ -28,18 +28,19 @@ void SetupPacket();
 void Pinconfig();
 void temporizador();
 void Pot_Reader();
-void recebedor();
+void recebedor(); // Receiver Function
+/* Leds Functions */
 void Leds();
-void animacao();
+void animacao(); // Animation Function
 void LedFuel();
 void led_state(byte pin[], byte qnt);
 void LedEmergency();
+/* Display Functions */
 void fourDigits();
 void sixDigits();
 void transformador_time_current(Tempo* T);
 void debounceSpeed();
 void Battery_box(int cor);
-//void led_state(uint8_t pin[], uint8_t estado);
 //void all_lines(int cor);
 //void doublelines(int x1,int y1,int x2,int y2,int quantidade);
 
@@ -257,7 +258,7 @@ void animacao()
   } while (u8g2.nextPage());
 }; 
 
-/* Global Functions */
+/* General Functions */
 //Led functions
 void LedFuel()
 {
