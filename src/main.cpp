@@ -15,9 +15,7 @@ Ticker ticker5Hz;
 Txtmng Var, Var_0;
 uint16_t potenciometro;
 uint16_t dado_arr[sizeof(Txtmng)];     //array que recebe os dados em Bits da ECU dianteira 
-uint8_t comb_pin[5];
 uint8_t intensity_led_brightness;
-
 /* Interrupts routine */
 void ticker2HzISR();
 void ticker5HzISR();
@@ -33,7 +31,6 @@ void recebedor(); // Receiver Function
 void Leds();
 void animacao(); // Animation Function
 void LedFuel();
-void led_state(byte pin[], byte qnt);
 void LedEmergency();
 /* Display Functions */
 void fourDigits();
@@ -93,13 +90,7 @@ void SetupPacket()
   Var.combustivel = 0;
   Var.temp_cvt = 0;
   Var.temp_motor = 0;
-  Var.telemetry = false;
-
-  comb_pin[0] = combust_1;
-  comb_pin[1] = combust_2;
-  comb_pin[2] = combust_3;
-  comb_pin[3] = combust_4;
-  comb_pin[4] = combust_5;
+  Var.telemetry = 0;
 }
 
 void Pinconfig()
@@ -113,12 +104,16 @@ void Pinconfig()
   pinMode(combust_5, OUTPUT);
   */
 
-  for (byte i=0; i<5; i++) pinMode(comb_pin[i], OUTPUT);
-
   pinMode(cvttemp_led, OUTPUT);
   pinMode(Bat_LED, OUTPUT);
   pinMode(mottemp_led, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+
+  pinMode(combust_1, OUTPUT);
+  pinMode(combust_2, OUTPUT);
+  pinMode(combust_3, OUTPUT);
+  pinMode(combust_4, OUTPUT);
+  pinMode(combust_5, OUTPUT);
     
   //botões e potenciometros
   pinMode(BOTAO, INPUT_PULLUP);
@@ -189,7 +184,7 @@ void recebedor()
 
     if(byteCount==0)      Serial.printf("\r\nvelocidade = %d\r\n", Var.velocidade);
     else if(byteCount==1) Serial.printf("\r\nrpm = %d\r\n", Var.rpm);
-    else if(byteCount==2) Serial.printf("\r\nSOC = %d\r\n", Var.rpm);
+    else if(byteCount==2) Serial.printf("\r\nSOC = %d\r\n", Var.battery);
     else if(byteCount==3) Serial.printf("\r\nfuel level = %d\r\n", Var.combustivel);
     else if(byteCount==4) Serial.printf("\r\ntemp motor = %d\r\n", Var.temp_motor);
     else if(byteCount==5) Serial.printf("\r\ntemp CVT = %d\r\n", Var.temp_cvt);
@@ -271,8 +266,6 @@ void LedFuel()
   //bool gas_led4_state = true;        //(*)
   //bool gas_led5_state = true;        //(*)
 
-  byte leds_on; //Significa quantas leds estarão acessas no painel 
-
   switch ((int)(Var.combustivel/10)) 
   {
     case (10):
@@ -282,15 +275,20 @@ void LedFuel()
       //gas_led3_state = emergency_led_state;        //(*)
       //gas_led4_state = emergency_led_state;        //(*)
       //gas_led5_state = emergency_led_state;        //(*)
-      leds_on = 5;
-      led_state(comb_pin, leds_on); 
+      analogWrite(combust_1, intensity_led_brightness);
+      analogWrite(combust_2, intensity_led_brightness);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (5):
       //gas_led1_state = false;       //( )
       //Os outros 4 leds estão ligados(*)(*)(*)(*)
-      leds_on=4;
-      led_state(comb_pin, leds_on);
+      analogWrite(combust_2, intensity_led_brightness);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (3):
@@ -298,8 +296,9 @@ void LedFuel()
       //gas_led1_state = false;       //( )
       //gas_led2_state = false;       //( )
       //Os outros 3 leds estão ligados(*)(*)(*)
-      leds_on=3;
-      led_state(comb_pin, leds_on);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
     
     case (2):
@@ -308,8 +307,8 @@ void LedFuel()
       //gas_led2_state = false;       //( )
       //gas_led3_state = false;       //( )
       //Os outros 2 leds estão ligados(*)(*)
-      leds_on=2;
-      led_state(comb_pin, leds_on);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
     break;
 
     case (1):
@@ -319,26 +318,14 @@ void LedFuel()
       //gas_led3_state = false;       //( )
       //gas_led4_state = false;       //( )
       //gas_led5_state = emergency_led_state;   //(*| )pisca
-      leds_on=true;
-      led_state(comb_pin, leds_on);
+      analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
     break;
+
+    default:
+      analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
+      break;
   }
 };
-
-void led_state(byte pin[], byte qnt)
-{
-  for (byte i=(5-qnt); i<5; i++)
-  {
-    if (qnt)
-    {
-      analogWrite(pin[i], emergency_led_state*intensity_led_brightness);
-      return;
-      
-    } else {
-      analogWrite(pin[i], intensity_led_brightness);
-    }
-  }
-}
 
 void LedEmergency()
 {

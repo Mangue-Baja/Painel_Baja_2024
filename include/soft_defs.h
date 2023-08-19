@@ -40,11 +40,11 @@ Perifericos Button;
 typedef struct {
   uint16_t velocidade;
   uint16_t rpm;
-  uint16_t battery;
+  uint8_t battery;
   uint16_t combustivel;
-  uint16_t temp_cvt;
-  uint16_t temp_motor;
-  uint16_t telemetry;
+  uint8_t temp_cvt;
+  uint8_t temp_motor;
+  uint8_t telemetry;
 } Txtmng;
 
 bool emergency_led_state;
