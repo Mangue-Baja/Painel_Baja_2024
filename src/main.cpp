@@ -11,11 +11,13 @@
 HardwareSerial Receiver(2); // Define a Serial port instance called 'Receiver' using serial port 2
 Ticker ticker2Hz;
 Ticker ticker5Hz;
+
 /* Global Variables */
 Txtmng Var, Var_0;
 uint16_t potenciometro;
 uint16_t dado_arr[sizeof(Txtmng)];     //array que recebe os dados em Bits da ECU dianteira 
 uint8_t intensity_led_brightness;
+
 /* Interrupts routine */
 void ticker2HzISR();
 void ticker5HzISR();
@@ -254,7 +256,7 @@ void animacao()
 }; 
 
 /* General Functions */
-//Led functions
+ //Led functions
 void LedFuel()
 {
   //(*) -> ligado
@@ -357,7 +359,7 @@ void LedEmergency()
 
 };
 
-//Display Segments Functions
+ //Display Segments Functions
 void fourDigits() 
 {
   //controle do display de 4 digitos e de 7 segmentos para visulização do RPM  
@@ -463,7 +465,7 @@ void transformador_time_current(Tempo* T)
   T-> segundos = T->tempo_volta_ms%60;
 };
 
-//Animation Functions (Display)
+ //Animation Functions (Display)
 void debounceSpeed()
 {
   //filtro da velocidade para acelerações
