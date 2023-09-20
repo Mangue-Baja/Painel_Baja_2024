@@ -11,7 +11,6 @@
 HardwareSerial Receiver(2); // Define a Serial port instance called 'Receiver' using serial port 2
 Ticker ticker2Hz;
 Ticker ticker5Hz;
-
 /* Global Variables */
 Txtmng Var, Var_0;
 uint16_t potenciometro;
@@ -29,12 +28,12 @@ void Pinconfig();
 void temporizador();
 void Pot_Reader();
 void recebedor(); // Receiver Function
-/* Leds Functions */
+// Leds Functions 
 void Leds();
 void animacao(); // Animation Function
 void LedFuel();
 void LedEmergency();
-/* Display Functions */
+// Display Functions
 void fourDigits();
 void sixDigits();
 void transformador_time_current(Tempo* T);
@@ -43,7 +42,6 @@ void Battery_box(int cor);
 //void all_lines(int cor);
 //void doublelines(int x1,int y1,int x2,int y2,int quantidade);
 
-//Setup
 void setup()
 {
   Serial.begin(115200);                                                     // Define and start serial monitor
@@ -244,8 +242,11 @@ void animacao()
     u8g2.drawStr(30,DisplayHight-1,"'C");       //cvt
     u8g2.drawStr(86,33,"Km/h");
     
-    (Var.telemetry) ? u8g2.drawStr(10,20,"BOX") : u8g2.drawStr(10,20,"   ");
-    
+    if(Var.telemetry==1)
+      u8g2.drawStr(10,20,"BOX");
+    else
+      u8g2.drawStr(10,20,"   ");    
+        
     //Velocimetro
     u8g2.setFont(u8g2_font_inb30_mn);           //Fonte com 27 pixels de altura
     u8g2.drawStr((DisplayWidth-u8g2.getStrWidth(Speed))/2,35,Speed);
@@ -256,7 +257,7 @@ void animacao()
 }; 
 
 /* General Functions */
- //Led functions
+// Led functions
 void LedFuel()
 {
   //(*) -> ligado
@@ -267,6 +268,28 @@ void LedFuel()
   //bool gas_led3_state = true;        //(*)
   //bool gas_led4_state = true;        //(*)
   //bool gas_led5_state = true;        //(*)
+  /*if(Var.combustivel!=0)
+  {
+    if(Enduro.minutos>=30 && Enduro.horas==0)
+    {
+      Var.combustivel=50;
+    }
+  
+    else if(Enduro.horas==1 && Enduro.minutos<30)
+    {
+      Var.combustivel=35;
+    }
+
+    else if(Enduro.horas==1 && Enduro.minutos>=30)
+    {
+      Var.combustivel=25;
+    } 
+
+    else if(Enduro.horas>=2)
+    {
+      Var.combustivel=18;
+    }
+  }*/
 
   switch ((int)(Var.combustivel/10)) 
   {
@@ -287,6 +310,7 @@ void LedFuel()
     case (5):
       //gas_led1_state = false;       //( )
       //Os outros 4 leds estão ligados(*)(*)(*)(*)
+      analogWrite(combust_1, LOW);
       analogWrite(combust_2, intensity_led_brightness);
       analogWrite(combust_3, intensity_led_brightness);
       analogWrite(combust_4, intensity_led_brightness);
@@ -298,6 +322,8 @@ void LedFuel()
       //gas_led1_state = false;       //( )
       //gas_led2_state = false;       //( )
       //Os outros 3 leds estão ligados(*)(*)(*)
+      analogWrite(combust_1, LOW);
+      analogWrite(combust_2, LOW);
       analogWrite(combust_3, intensity_led_brightness);
       analogWrite(combust_4, intensity_led_brightness);
       analogWrite(combust_5, intensity_led_brightness);
@@ -309,6 +335,9 @@ void LedFuel()
       //gas_led2_state = false;       //( )
       //gas_led3_state = false;       //( )
       //Os outros 2 leds estão ligados(*)(*)
+      analogWrite(combust_1, LOW);
+      analogWrite(combust_2, LOW);
+      analogWrite(combust_3, LOW);
       analogWrite(combust_4, intensity_led_brightness);
       analogWrite(combust_5, intensity_led_brightness);
     break;
@@ -320,6 +349,10 @@ void LedFuel()
       //gas_led3_state = false;       //( )
       //gas_led4_state = false;       //( )
       //gas_led5_state = emergency_led_state;   //(*| )pisca
+      analogWrite(combust_1, LOW);
+      analogWrite(combust_2, LOW);
+      analogWrite(combust_3, LOW);
+      analogWrite(combust_4, LOW);
       analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
     break;
 
@@ -341,7 +374,7 @@ void LedEmergency()
   //controle da luz de emergencia da temperatura do Motor     
   if (Var.temp_motor < Alerta_TempMOT)
   {
-    digitalWrite(mottemp_led,LOW);
+    digitalWrite(mottemp_led, LOW);
   }  else {
     analogWrite(mottemp_led, emergency_led_state*intensity_led_brightness);
   }
@@ -349,23 +382,27 @@ void LedEmergency()
   //controle da luz de emergencia da temperatura da CVT
   if (Var.temp_cvt < Alerta_TempCVT) 
   {
-    digitalWrite(cvttemp_led,LOW);
+    digitalWrite(cvttemp_led, LOW);
   }  else {
     analogWrite(cvttemp_led, emergency_led_state*intensity_led_brightness);
   }
 
   //controle da luz de emergencia da bateria
-  (Var.battery>20) ? digitalWrite(Bat_LED, LOW) : analogWrite(Bat_LED, emergency_led_state*intensity_led_brightness);
-
+  if(Var.battery > 20)
+  {
+    digitalWrite(Bat_LED, LOW);
+  } else {
+    analogWrite(Bat_LED, emergency_led_state*intensity_led_brightness);
+  }
 };
 
- //Display Segments Functions
+//Display Segments Functions
 void fourDigits() 
 {
   //controle do display de 4 digitos e de 7 segmentos para visulização do RPM  
   //setup Four digits display
   Four.setBrightness(intensity_led_brightness);   //controle de brilho do display
-  Four.showNumberDecEx(Var.rpm, 0, true);  //valor exibido no display o true é para se é para considerar os 0s
+  Four.showNumberDecEx(Var.rpm*100, 0, true);  //valor exibido no display o true é para se é para considerar os 0s
 
 };
 
@@ -465,7 +502,7 @@ void transformador_time_current(Tempo* T)
   T-> segundos = T->tempo_volta_ms%60;
 };
 
- //Animation Functions (Display)
+//Animation Functions (Display)
 void debounceSpeed()
 {
   //filtro da velocidade para acelerações
@@ -549,30 +586,28 @@ void buttonInterruptISR()
 {
   if (Switch.buttonState)
   {
-    if ((millis() - Button.lastDebounceTime) > debounceDelay) 
-    {
-      Button.mode++;
+     if ((millis() - Button.lastDebounceTime) > debounceDelay) 
+     {
+       Button.mode++;
 
-      penultima_volta = ultima_volta;
-      ultima_volta = Volta;
-      Volta.segundos = 0;
-      Volta.minutos = 0;
-      Volta.horas = 0;
-      Volta.time_current = millis();
+       penultima_volta = ultima_volta;
+       ultima_volta = Volta;
+       Volta.segundos = 0;
+       Volta.minutos = 0;
+       Volta.horas = 0;
+       Volta.time_current = millis();
       
+       if (Button.mode >= 2)
+       {
 
-      if (Button.mode >= 2)
-      {
-      
         //six_digits_state = DELTA_CRONOMETRO;
-
-      } else {
-
+       
+       } else {
         six_digits_state = CRONOMETRO;
-      
       };
-    } 
-    Button.lastDebounceTime = millis(); 
+     }  
+     Button.lastDebounceTime = millis();   
+    //ESP.restart();
   }
 };
 

@@ -7,6 +7,7 @@
   #include <TM1637Display.h>
   #include <TM1637TinyDisplay6.h>
   #include <U8g2lib.h>
+  #include "hard_defs.h"
 #endif
 
 typedef struct {
