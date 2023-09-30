@@ -3,10 +3,6 @@
 
 #ifdef SOFT_DEFS_H
   #include <Arduino.h>
-  #include <string.h>
-  #include <TM1637Display.h>
-  #include <TM1637TinyDisplay6.h>
-  #include <U8g2lib.h>
   #include "hard_defs.h"
 #endif
 
@@ -27,25 +23,25 @@ Tempo Delta;
 
 typedef struct {
   uint8_t Pin;
-  int buttonState;                     // the current reading from the input pin
-  int lastButtonState = LOW;           // the previous reading from the input pin
-  unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+  int buttonState;                     // The current reading from the input pin
+  int lastButtonState = LOW;           // Tthe previous reading from the input pin
+  unsigned long lastDebounceTime = 0;  // The last time the output pin was toggled
   uint8_t mode = 0;
 } Perifericos;
 
 Perifericos Switch;
 Perifericos Button;
 
-//Struct para receber todos os dados do painel
-//caso deseja adicionar um dado no painel  alterar não só na variavél quanto na ECU dianteira
+//Struct to receive all panel data
+//if you want to add data to the panel, change it not only in the variable but also in the front ECU
 typedef struct {
   uint16_t velocidade;
   uint16_t rpm;
-  uint8_t battery;
+  uint16_t temp_motor;
   uint16_t combustivel;
-  uint8_t temp_cvt;
-  uint8_t temp_motor;
-  uint8_t telemetry;
+  uint16_t battery;
+  uint16_t temp_cvt;
+  uint16_t telemetry;
 } Txtmng;
 
 bool emergency_led_state;
@@ -53,13 +49,9 @@ bool boolean1HZ;
 bool boolean5HZ;
 
 unsigned long lastDebounceTime = 0;
-const int debounceDelay = 200;          //tempo em millisegundos para debounce dos botões
+const int debounceDelay = 200;          //Time in milliseconds for button debounce
 
-typedef enum PROGMEM {
-  TEMPO_DE_ENDURO, 
-  CRONOMETRO, 
-  DELTA_CRONOMETRO
-} tempo_six_digits;
+typedef enum PROGMEM {TEMPO_DE_ENDURO, CRONOMETRO, DELTA_CRONOMETRO} tempo_six_digits;
 
 byte six_digits_state = TEMPO_DE_ENDURO;
 

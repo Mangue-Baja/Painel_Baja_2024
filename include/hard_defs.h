@@ -4,41 +4,40 @@
 #include <Arduino.h>
 
 //Four digits display
-#define Fourdigits_DIO      15     // Data do display de 4 digitos
-#define Fourdigits_CLK      4      // Clock do display de 4 digitos
+#define Fourdigits_DIO      15     // 4-digit display DATA
+#define Fourdigits_CLK      4      // 4-digit display CLOCK
 
 //Six digits display
-#define Sixdigits_DIO       18     // Data  do display de 6 digitos
-#define Sixdigits_CLK       19     // Clock  do display de 6 digitos
+#define Sixdigits_DIO       18     // 6-digit display DATA
+#define Sixdigits_CLK       19     // 6-digit display CLOCK
 
 //OLED
-#define SCLK_OLED           21     // Clock do OLED
-#define SDA_OLED            22     // Data do OLED
+#define SCLK_OLED           21     // OLED CLOCK
+#define SDA_OLED            22     // OLED DATA
 
-#define DisplayHight        64     // Altura do Oled
-#define DisplayWidth        124    // Comprimento do Oled
+#define DisplayHight        64 
+#define DisplayWidth        124    
 
-//leds
-#define combust_1           14    // 1ºled amarelo de combustivel
-#define combust_2           27    // 2ºled amarelo de combustivel
-#define combust_3           25    // 3ºled amarelo de combustivel  
-#define combust_4           33    // 4ºled amarelo de combustivel 
-#define combust_5           32    // led vermelho de emergencia do combustivel 
+//Leds
+#define combust_1           14    // 1st fuel LED
+#define combust_2           27    // 2st fuel LED
+#define combust_3           25    // 3st fuel LED 
+#define combust_4           33    // 4st fuel LED
+#define combust_5           32    // fuel emergency LED 
 
-#define mottemp_led         13    // led de aviso de temperatura do motor
-#define cvttemp_led         12    // led de aviso de temperatura do CVT
-#define Bat_LED             26    // led de aviso da porcentagem da bateria
+#define mottemp_led         13    // Motor temperature warning LED
+#define cvttemp_led         12    // CVT temperature warning LED
+#define Bat_LED             26    // Battery percentage warning LED
 
-//botões e chaves para interações com o usuario no carro
-#define BOTAO               23    // verde
-#define CHAVE               35    // roxo
-#define POTENCIOMETRO       34    // cinza
+//Buttons and keys for interactions with the user in the car
+#define BOTAO               23    // Green
+#define CHAVE               35    // Purple
+#define POTENCIOMETRO       34    // Gray
 
-#define Alerta_TempCVT      90    // temperatura estimada de quando a correia da cvt pode dar problema
-#define Alerta_TempMOT      105   // temperatura estimada para dar problema na temperatura do motor
+#define Alerta_TempCVT      90    // Estimated temperature of when the cvt belt may have a problem
+#define Alerta_TempMOT      105   // Estimated temperature for engine temperature problems
 
-//Comunicação Serial com a Ecu da frente
-#define Receiver_Rxd_pin    16    // azul
-#define Receiver_Txd_pin    17    // amarelo
-
+//Serial Communication with the Front ECU (MMI)
+#define Receiver_Rxd_pin    16    // Blue
+#define Receiver_Txd_pin    17    // Yellow
 #endif
