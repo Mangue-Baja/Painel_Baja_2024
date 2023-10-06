@@ -16,7 +16,6 @@ Txtmng Var, Var_0;
 uint16_t potenciometro;
 uint16_t dado_arr[sizeof(Txtmng)];     // array that receives data in Bits from the front ECU (MMI)
 
-
 /* Interrupts routine */
 void buttonInterruptISR();
 void switchInterruptISR();
@@ -234,7 +233,7 @@ void animacao()
     u8g2.drawStr(86,33,"Km/h");
     
     if(Var.telemetry==1)
-      u8g2.drawStr(10,20,"BOX");
+      u8g2.drawStr(10,20,"ON");
     else
       u8g2.drawStr(10,20,"   ");    
         
@@ -304,7 +303,7 @@ void LedFuel()
     break;
 
     default:
-      analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
+      //analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
       break;
   }
 }
