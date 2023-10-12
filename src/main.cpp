@@ -441,8 +441,10 @@ void transformador_time_current(Tempo* T)
 
   T->tempo_volta_ms = (millis() - T->time_current)/1000;
 
-  if(corrector > 4) T->segundos = T->tempo_volta_ms%60 + 1;
-  else T-> segundos = T->tempo_volta_ms%60;
+  if(corrector > 4) 
+    T->segundos = T->tempo_volta_ms%60 + 1;
+  else 
+    T-> segundos = T->tempo_volta_ms%60;
   
 
   T-> horas = T->tempo_volta_ms/3600;
