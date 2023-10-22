@@ -235,7 +235,7 @@ void animacao()
     if(Var.telemetry==1)
       u8g2.drawStr(10,20,"ON");
     else
-      u8g2.drawStr(10,20,"   ");    
+      u8g2.drawStr(10,20,"  ");    
         
     //Speedometer
     u8g2.setFont(u8g2_font_inb30_mn);           //Font 27 pixels high
@@ -304,6 +304,11 @@ void LedFuel()
 
     default:
       //analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
+      analogWrite(combust_1, intensity_led_brightness);
+      analogWrite(combust_2, intensity_led_brightness);
+      analogWrite(combust_3, intensity_led_brightness);
+      analogWrite(combust_4, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness);
       break;
   }
 }
@@ -319,28 +324,22 @@ void LedEmergency()
   //enquanto com o aumento do valor é quase que exponencial em um potenciometro do tipo B
   
   //control of the Engine temperature emergency light     
-  if(Var.temp_motor < Alerta_TempMOT)
-  {
-    digitalWrite(mottemp_led, LOW);
-  }  else {
+  if(Var.temp_motor > Alerta_TempMOT)
     analogWrite(mottemp_led, emergency_led_state*intensity_led_brightness);
-  }
-  
-  //control of the CVT temperature emergency light
-  if(Var.temp_cvt < Alerta_TempCVT) 
-  {
-    digitalWrite(cvttemp_led, LOW);
-  }  else {
-    analogWrite(cvttemp_led, emergency_led_state*intensity_led_brightness);
-  }
+  else 
+    digitalWrite(mottemp_led, LOW);
 
-  //battery emergency light control
-  if(Var.battery > 20)
-  {
-    digitalWrite(Bat_LED, LOW);
-  } else {
+  // control of the CVT temperature emergency light
+  if(Var.temp_cvt > Alerta_TempCVT) 
+    analogWrite(cvttemp_led, emergency_led_state*intensity_led_brightness);
+  else 
+    digitalWrite(cvttemp_led, LOW);
+
+  // battery emergency light control
+  if(Var.battery <= 20)
     analogWrite(Bat_LED, emergency_led_state*intensity_led_brightness);
-  }
+  else
+    digitalWrite(Bat_LED, LOW);
 }
 
 //Display Segments Functions
@@ -360,7 +359,7 @@ void sixDigits()
     These are the values ​​of the digit positions and 7 segments, which is the last value placed in the showNumberDec() function
 
       5   4   3    2   1   0        
-      _   _   _    _   _   _
+     _   _   _    _   _   _
     |_| |_| |_|  |_| |_| |_|
     |_| |_| |_|  |_| |_| |_|
 
@@ -490,7 +489,7 @@ void debounceSpeed()
 
     }
   }
-};
+}
 
 void Battery_box(int cor)
 {  
@@ -559,7 +558,7 @@ void buttonInterruptISR()
     Button.lastDebounceTime = millis();   
     //ESP.restart();
   }
-};
+}
 
 void switchInterruptISR()
 {
@@ -581,19 +580,19 @@ void switchInterruptISR()
     Volta.time_current = millis();
   }
   Switch.lastDebounceTime = millis();
-};
+}
 
 void ticker2HzISR() 
 {  
   emergency_led_state = !emergency_led_state;
 
   if(emergency_led_state) boolean1HZ=true;
-};
+}
 
 void ticker5HzISR()
 { 
   boolean5HZ = true;
-};
+}
             
 /* Useless, only for backup */
 /*void doublelines(int x1,int y1,int x2,int y2,int quantidade)
