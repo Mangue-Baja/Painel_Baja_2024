@@ -68,7 +68,7 @@ void loop()
   potenciometro = analogRead(POTENCIOMETRO);   // Function to read the potentiometer
 
   // Here I had to put it in an if else because a bug appeared when placing the receiver() in the same loop as the animation()
-  if(Receiver.available()>0 )
+  if(Receiver.available() > 0)
   {    
     recebedor();      // Receives serial data from the front ECU
   } else {
@@ -232,10 +232,15 @@ void animacao()
     u8g2.drawStr(30,DisplayHight-1,"'C");       //cvt
     u8g2.drawStr(86,33,"Km/h");
     
-    if(Var.telemetry==1)
+    if(Var.telemetry==1 || Var.telemetry==3) 
       u8g2.drawStr(10,20,"ON");
     else
-      u8g2.drawStr(10,20,"  ");    
+      u8g2.drawStr(10,20,"  "); 
+
+    if(Var.telemetry==2 || Var.telemetry==3)
+      u8g2.drawStr(6, 37, "4x4");
+    else
+      u8g2.drawStr(20, 20, "   "); 
         
     //Speedometer
     u8g2.setFont(u8g2_font_inb30_mn);           //Font 27 pixels high
@@ -303,12 +308,12 @@ void LedFuel()
     break;
 
     default:
-      //analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
-      analogWrite(combust_1, intensity_led_brightness);
-      analogWrite(combust_2, intensity_led_brightness);
-      analogWrite(combust_3, intensity_led_brightness);
-      analogWrite(combust_4, intensity_led_brightness);
-      analogWrite(combust_5, intensity_led_brightness);
+      analogWrite(combust_5, intensity_led_brightness*emergency_led_state);
+      //analogWrite(combust_1, intensity_led_brightness);
+      //analogWrite(combust_2, intensity_led_brightness);
+      //analogWrite(combust_3, intensity_led_brightness);
+      //analogWrite(combust_4, intensity_led_brightness);
+      //analogWrite(combust_5, intensity_led_brightness);
       break;
   }
 }
