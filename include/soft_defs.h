@@ -22,7 +22,7 @@ Time Lap;
 
 typedef struct {
   uint8_t Pin = SWITCH;
-  uint8_t buttonState;                 // The current reading from the input pin
+  //uint8_t buttonState;                 // The current reading from the input pin
   uint8_t lastButtonState = LOW;       // Tthe previous reading from the input pin
   unsigned long lastDebounceTime = 0;  // The last time the output pin was toggled
   //uint8_t mode = 0;
