@@ -34,8 +34,8 @@
 #define SWITCH              35    // Purple
 #define POTENTIOMETER       34    // Gray
 
-#define Alert_TempCVT      90    // Estimated temperature of when the cvt belt may have a problem
-#define Alert_TempMOT      105   // Estimated temperature for engine temperature problems
+#define Alert_TempCVT       90    // Estimated temperature of when the cvt belt may have a problem
+#define Alert_TempMOT       105   // Estimated temperature for engine temperature problems
 
 // Serial Communication with the Front ECU (MMI)
 #define Receiver_Rxd_pin    16    // Blue
