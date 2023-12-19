@@ -56,6 +56,7 @@ void setup()
 
   // Setup OLED
   u8g2.begin();
+  u8g2.enableUTF8Print();
 
   SetupPacket();
   Pinconfig();
@@ -80,12 +81,14 @@ void loop()
   {
     six_digits_state = ENDURANCE_TIMER;
     Mode_Sport = false;
+    // Mode_Sport = true;
   }
 
   else
   {
     six_digits_state = STOPWATCH;
-    Mode_Sport = true;
+    // Mode_Sport = true;
+    Mode_Sport = false;
   }
 
   // Here I had to put it in an if else because a bug appeared when placing the receiver() in the same loop as the animation()
@@ -98,19 +101,19 @@ void loop()
   {
     Leds_State();      // Function that contains all LEDs
 
-    if(Mode_Sport)
-    {
-      if(Switch.lastButtonState)
-      {
-        u8g2.clearDisplay();
-        Switch.lastButtonState = false;
-      }
+    // if(Mode_Sport)
+    // {
+    //   if(Switch.lastButtonState)
+    //   {
+    //     u8g2.clearDisplay();
+    //     Switch.lastButtonState = false;
+    //   }
 
-      Sport_Animation();
-    }
+    //   Sport_Animation();
+    // }
 
-    else
-    {
+    // else
+    // {
       if(Switch.lastButtonState)
       {
         u8g2.clearDisplay();
@@ -118,7 +121,7 @@ void loop()
       }
 
       Comfort_Animation();       // Oled animation
-    }
+    // }
   }
 
   Var_0 = Var;
@@ -193,6 +196,7 @@ void Receiver_Data()
   
   //Serial.println("\n");
   memcpy(&Var, (Txtmng *)&data_arr, sizeof(Txtmng)); // then the bit values ​​of the array are placed in the Struct Var to be used
+  Var.rpm = 3000;
 }
 
 void Leds_State()
@@ -223,7 +227,6 @@ void Comfort_Animation()
   u8g2.firstPage();
   do {
 
-    //u8g2.setFontMode(0);
     u8g2.setFontMode(1);                //dark background color I don't recommend changing (this is already the best aesthetic combination)
     u8g2.setDrawColor(Background);              
     u8g2.drawBox(0, 0, DisplayWidth+4, DisplayHight);
@@ -231,22 +234,39 @@ void Comfort_Animation()
 
     //Display engine temperature and CVT temperature
     u8g2.setFont(u8g2_font_crox2c_tn);          //Font 13 pixels high
-    u8g2.drawStr(79, DisplayHight-1, T_motor);    //Motor value
-    u8g2.drawStr(0, DisplayHight-1, T_cvt);       //CVT value
+    u8g2.drawStr(79, DisplayHight, T_motor);    //Motor value
+    u8g2.drawStr(0, DisplayHight, T_cvt);       //CVT value
+
+    u8g2.setFont(u8g2_font_5x8_tf);        //Font
+    u8g2.drawStr(10, 50, "CVT");
+    u8g2.drawStr(83, 50, "Motor");
+
+    bitmap_center_fill;
 
     //graus celcius
-    u8g2.setFont(u8g2_font_7x13_t_cyrillic);    //Font 9 pixels high
-    u8g2.drawStr(110, DisplayHight-1, "'C");      //motor
-    u8g2.drawStr(30, DisplayHight-1, "'C");       //cvt
+    u8g2.setFont(u8g2_font_6x12_me);
+    u8g2.setCursor(110, DisplayHight);
+    u8g2.print(GRAUS_SYM);                      //Hexadecimal do símbolo de grau
+    u8g2.setCursor(30, DisplayHight);
+    u8g2.print(GRAUS_SYM);
+    u8g2.setFont(u8g2_font_7x13_t_cyrillic);   //Font 9 pixels high
+    u8g2.drawStr(117, DisplayHight, "C");      //motor
+    u8g2.drawStr(37, DisplayHight, "C");       //cvt
     u8g2.drawStr(86, 33, "Km/h");
     
     if(Var.sot==1 || Var.sot==3) 
-      u8g2.drawStr(10, 20, "ON");
+    {
+      u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
+      u8g2.setCursor(10,18);
+      u8g2.print(WIFI_SYM);                    // Hexadecimal do símbolo de internet
+    }
     else
       u8g2.drawStr(10, 20, "  "); 
 
+    u8g2.setFont(u8g2_font_7x13_t_cyrillic);
+
     if(Var.sot==2 || Var.sot==3)
-      u8g2.drawStr( 6, 37, "4x4");
+      u8g2.drawStr(6, 33, "4x4");
     else
       u8g2.drawStr(20, 20, "   "); 
         
@@ -259,10 +279,19 @@ void Comfort_Animation()
   } while(u8g2.nextPage());
 }
 
-void Sport_Animation()
-{
-  delay(1);
-}
+//void Sport_Animation()
+//{
+//
+//  u8g2.firstPage();
+//  do{
+//
+//  } while(u8g2.nextPage());
+//
+//  u8g2.setFont(u8g2_font_battery24_tr);
+//  u8g2.setCursor(48, 64);
+//  u8g2.print("\u(0x30 + 0x0C)");
+//
+//}
 
 /* General Functions */
 // Led functions
@@ -478,11 +507,11 @@ void Battery_box(uint8_t cor)
 
   //battery icon
   u8g2.setDrawColor(cor);
-  u8g2.drawBox(x+7, DisplayHight-y-4*(y+1)-4, DisplayWidth - 2*(x+5),2);
-  u8g2.drawBox(x, DisplayHight-y-4*(y+1)-2, DisplayWidth - 2*x+4, 5*(y+1)+2);
+  u8g2.drawBox(x+6, DisplayHight-y-4*(y+1)-4, DisplayWidth - 2*(x+5),2);
+  u8g2.drawBox(x-1, DisplayHight-y-4*(y+1)-2, DisplayWidth - 2*x+4, 5*(y+1)+2);
     
   u8g2.setDrawColor(!cor);
-  u8g2.drawBox(x+1, DisplayHight-y-4*(y+1)-1, DisplayWidth - 2*x+2, 5*(y+1));
+  u8g2.drawBox(x, DisplayHight-y-4*(y+1)-1, DisplayWidth - 2*x+2, 5*(y+1));
   
   //dashed battery icon
   if(Var.battery >= 0)
@@ -497,15 +526,15 @@ void Battery_box(uint8_t cor)
         {
           if(Var.battery >= 80)
           {  
-            u8g2.drawBox(x+2, DisplayHight-y-4*(y+1), DisplayWidth - 2*x, y);                
+            u8g2.drawBox(x+1, DisplayHight-y-4*(y+1), DisplayWidth - 2*x, y);                
           }
-          u8g2.drawBox(x+2, DisplayHight-y-3*(y+1), DisplayWidth - 2*x, y); 
+          u8g2.drawBox(x+1, DisplayHight-y-3*(y+1), DisplayWidth - 2*x, y); 
         }
-        u8g2.drawBox(x+2, DisplayHight-y-2*(y+1), DisplayWidth - 2*x, y);
+        u8g2.drawBox(x+1, DisplayHight-y-2*(y+1), DisplayWidth - 2*x, y);
       }
-      u8g2.drawBox(x+2, DisplayHight-y-(y+1), DisplayWidth - 2*x, y);
+      u8g2.drawBox(x+1, DisplayHight-y-(y+1), DisplayWidth - 2*x, y);
     }
-    u8g2.drawBox(x+2, DisplayHight-y, DisplayWidth - 2*x, y);
+    u8g2.drawBox(x+1, DisplayHight-y, DisplayWidth - 2*x, y);
   }
   u8g2.setDrawColor(2);  
 }
