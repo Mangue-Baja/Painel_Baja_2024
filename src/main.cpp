@@ -198,7 +198,6 @@ void Receiver_Data()
   
   //Serial.println("\n");
   memcpy(&Var, (Txtmng *)&data_arr, sizeof(Txtmng)); // then the bit values ​​of the array are placed in the Struct Var to be used
-  Var.rpm = 3000;
 }
 
 void Leds_State()
@@ -266,8 +265,6 @@ void Comfort_Animation()
     { 
       u8g2.drawStr(10, 20, "  "); 
     } 
-
-    u8g2.setFont(u8g2_font_7x13_t_cyrillic);
 
     u8g2.setFont(u8g2_font_7x13_t_cyrillic);
 
