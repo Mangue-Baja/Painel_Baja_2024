@@ -243,8 +243,6 @@ void Comfort_Animation()
     u8g2.drawStr(10, 50, "CVT");
     u8g2.drawStr(83, 50, "Motor");
 
-    bitmap_center_fill;
-
     u8g2.setFont(u8g2_font_5x8_tf);        //Font
     u8g2.drawStr(10, 50, "CVT");
     u8g2.drawStr(83, 50, "Motor");
@@ -252,9 +250,9 @@ void Comfort_Animation()
     //graus celcius
     u8g2.setFont(u8g2_font_6x12_me);
     u8g2.setCursor(110, DisplayHight);
-    u8g2.print(GRAUS_SYM);   //                   //Hexadecimal do símbolo de grau
+    u8g2.print(GRAUS_SYM);                     //Degree symbol
     u8g2.setCursor(30, DisplayHight);
-    u8g2.print(GRAUS_SYM); //
+    u8g2.print(GRAUS_SYM);
     u8g2.setFont(u8g2_font_7x13_t_cyrillic);   //Font 9 pixels high
     u8g2.drawStr(117, DisplayHight, "C");      //motor
     u8g2.drawStr(37, DisplayHight, "C");       //cvt
@@ -265,7 +263,7 @@ void Comfort_Animation()
       // Conectivity symbol
       u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
       u8g2.setCursor(10,18);
-      u8g2.print("\u00f7");  //                  
+      u8g2.print(WIFI_SYM);             
     }
       
     else
