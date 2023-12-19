@@ -17,13 +17,13 @@ Txtmng Var, Var_0;
 bool emergency_led_state = true;
 bool boolean1HZ = true;
 bool boolean10HZ = false;
-bool Mode_Sport = false;
+//bool Mode_Sport = false;
 uint16_t pot;
 uint8_t data_arr[sizeof(Txtmng)];     // array that receives data in Bits from the front ECU (MMI)
 
 /* Interrupts routine */
 void ButtonInterruptISR();
-void SwitchInterruptISR();
+//void SwitchInterruptISR();
 void ticker2HzISR();
 void ticker10HzISR();
 /* Setup Functions */
@@ -34,7 +34,7 @@ void Receiver_Data(); // Receiver Function
  // Leds Functions 
 void Leds_State();
 void Comfort_Animation(); // Comfort design animation Function
-void Sport_Animation();   // Sport design animation Function
+//void Sport_Animation();   // Sport design animation Function
 void LedFuel();
 void LedEmergency();
  // Display Functions
@@ -64,10 +64,10 @@ void setup()
 
   six_digits_state = digitalRead(Switch.Pin) & STOPWATCH;
 
-  if(!six_digits_state)
-    Mode_Sport = false;
-  else 
-    Mode_Sport = true;
+  //if(!six_digits_state)
+  //  Mode_Sport = false;
+  //else 
+  //  Mode_Sport = true;
 
   delay(10);
 }
@@ -79,13 +79,17 @@ void loop()
   if(!digitalRead(Switch.Pin))
   {
     six_digits_state = ENDURANCE_TIMER;
-    Mode_Sport = false;
+    //Mode_Sport = false;
+    Lap.seconds = 0;
+    Lap.minutes = 0;
+    Lap.hours = 0;
+    Lap.time_current = millis();
   }
 
   else
   {
     six_digits_state = STOPWATCH;
-    Mode_Sport = true;
+    //Mode_Sport = true;
   }
 
   // Here I had to put it in an if else because a bug appeared when placing the receiver() in the same loop as the animation()
@@ -98,27 +102,27 @@ void loop()
   {
     Leds_State();      // Function that contains all LEDs
 
-    if(Mode_Sport)
-    {
-      if(Switch.lastButtonState)
-      {
-        u8g2.clearDisplay();
-        Switch.lastButtonState = false;
-      }
+    //if(Mode_Sport)
+    //{
+    //  if(Switch.lastButtonState)
+    //  {
+    //    u8g2.clearDisplay();
+    //    Switch.lastButtonState = false;
+    //  }
 
-      Sport_Animation();
-    }
+    //  Sport_Animation();
+    //}
 
-    else
-    {
-      if(Switch.lastButtonState)
-      {
-        u8g2.clearDisplay();
-        Switch.lastButtonState = false;
-      }
+    //else
+    //{
+    //  if(Switch.lastButtonState)
+    //  {
+    //    u8g2.clearDisplay();
+    //    Switch.lastButtonState = false;
+    //  }
 
       Comfort_Animation();       // Oled animation
-    }
+    //}
   }
 
   Var_0 = Var;
@@ -162,7 +166,7 @@ void Pinconfig()
 
   // Interruptions
   attachInterrupt(digitalPinToInterrupt(BUTTON), ButtonInterruptISR, RISING);
-  attachInterrupt(digitalPinToInterrupt(SWITCH), SwitchInterruptISR, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(SWITCH), SwitchInterruptISR, CHANGE);
 
   return;
 }
@@ -234,16 +238,35 @@ void Comfort_Animation()
     u8g2.drawStr(79, DisplayHight-1, T_motor);    //Motor value
     u8g2.drawStr(0, DisplayHight-1, T_cvt);       //CVT value
 
+    u8g2.setFont(u8g2_font_5x8_tf);        //Font
+    u8g2.drawStr(10, 50, "CVT");
+    u8g2.drawStr(83, 50, "Motor");
+
     //graus celcius
-    u8g2.setFont(u8g2_font_7x13_t_cyrillic);    //Font 9 pixels high
-    u8g2.drawStr(110, DisplayHight-1, "'C");      //motor
-    u8g2.drawStr(30, DisplayHight-1, "'C");       //cvt
+    u8g2.setFont(u8g2_font_6x12_me);
+    u8g2.setCursor(110, DisplayHight);
+    u8g2.print(GRAUS_SYM);   //                   //Hexadecimal do símbolo de grau
+    u8g2.setCursor(30, DisplayHight);
+    u8g2.print(GRAUS_SYM); //
+    u8g2.setFont(u8g2_font_7x13_t_cyrillic);   //Font 9 pixels high
+    u8g2.drawStr(117, DisplayHight, "C");      //motor
+    u8g2.drawStr(37, DisplayHight, "C");       //cvt
     u8g2.drawStr(86, 33, "Km/h");
     
     if(Var.sot==1 || Var.sot==3) 
-      u8g2.drawStr(10, 20, "ON");
+    {
+      // Conectivity symbol
+      u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
+      u8g2.setCursor(10,18);
+      u8g2.print("\u00f7");  //                  
+    }
+      
     else
+    { 
       u8g2.drawStr(10, 20, "  "); 
+    } 
+
+    u8g2.setFont(u8g2_font_7x13_t_cyrillic);
 
     if(Var.sot==2 || Var.sot==3)
       u8g2.drawStr( 6, 37, "4x4");
@@ -259,10 +282,10 @@ void Comfort_Animation()
   } while(u8g2.nextPage());
 }
 
-void Sport_Animation()
+/*void Sport_Animation()
 {
   delay(1);
-}
+}*/
 
 /* General Functions */
 // Led functions
@@ -513,7 +536,7 @@ void Battery_box(uint8_t cor)
 /* Interrupts routine */
 void ButtonInterruptISR()
 {
-  if(Mode_Sport)
+  if(/*Mode_Sport*/ six_digits_state==STOPWATCH)
   {  
     if((millis() - lastDebounceTime) > debounceDelay-50) 
     {
@@ -541,7 +564,7 @@ void ButtonInterruptISR()
   }
 }
 
-void SwitchInterruptISR()
+/*void SwitchInterruptISR()
 {
   if(millis() - Switch.lastDebounceTime > debounceDelay/2)
   {
@@ -550,7 +573,7 @@ void SwitchInterruptISR()
   }
 
   Switch.lastDebounceTime = millis();
-}
+}*/
 
 void ticker2HzISR() 
 {  

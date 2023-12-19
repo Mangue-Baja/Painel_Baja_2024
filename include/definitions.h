@@ -3,6 +3,9 @@
 
 #include "soft_defs.h"
 
+#define GRAUS_SYM   "\u00b0"
+#define WIFI_SYM    "\u00f7"
+
 #define Receiver Serial2 // Defines a Serial port instance called 'Receiver' using serial port 2
 
 // Four digits display
