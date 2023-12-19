@@ -243,10 +243,6 @@ void Comfort_Animation()
     u8g2.drawStr(10, 50, "CVT");
     u8g2.drawStr(83, 50, "Motor");
 
-    u8g2.setFont(u8g2_font_5x8_tf);        //Font
-    u8g2.drawStr(10, 50, "CVT");
-    u8g2.drawStr(83, 50, "Motor");
-
     //graus celcius
     u8g2.setFont(u8g2_font_6x12_me);
     u8g2.setCursor(110, DisplayHight);
