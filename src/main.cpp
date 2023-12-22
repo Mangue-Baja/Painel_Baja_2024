@@ -204,7 +204,7 @@ void Leds_State()
 {
   if(boolean10HZ)
   {
-    LedFuel();
+    //LedFuel();
     LedEmergency();
     FourDigits();
     SixDigits();
