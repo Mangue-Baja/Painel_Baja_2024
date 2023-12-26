@@ -569,7 +569,6 @@ void ButtonInterruptISR()
   if(millis() - Switch.lastDebounceTime > debounceDelay/2)
   {
     Switch.lastButtonState = true;
-    //Serial.println("opa");  
   }
 
   Switch.lastDebounceTime = millis();
