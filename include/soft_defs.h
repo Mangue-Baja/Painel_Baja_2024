@@ -12,6 +12,7 @@ typedef struct {
 
   unsigned long time_current = 0;
   unsigned long time_lap_ms = 0;
+
 } Time;
 
 Time Endurance;
@@ -26,12 +27,13 @@ typedef struct {
   uint8_t lastButtonState = LOW;       // Tthe previous reading from the input pin
   unsigned long lastDebounceTime = 0;  // The last time the output pin was toggled
   //uint8_t mode = 0;
+
 } Peripherals;
 
 Peripherals Switch;
 
-//Struct to receive all panel data
-//if you want to add data to the panel, change it not only in the variable but also in the front ECU
+// Struct to receive all panel data
+// If you want to add data to the panel, change it not only in the variable but also in the front ECU
 typedef struct {
   uint16_t speed;     // 2by
   uint16_t rpm;       // 2by
@@ -40,10 +42,11 @@ typedef struct {
   uint8_t battery;    // 1by
   uint8_t temp_cvt;   // 1by
   uint8_t sot;        // 1by
+
 } Txtmng;
 
 unsigned long lastDebounceTime = 0;
-const int debounceDelay = 200;          //Time in milliseconds for button debounce
+const int debounceDelay = 200;          // Time in milliseconds for button debounce
 
 typedef enum PROGMEM {ENDURANCE_TIMER, STOPWATCH, DELTA_CRONOMETRO} tempo_six_digits;
 

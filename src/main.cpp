@@ -12,6 +12,7 @@
 /* ESP Tools */
 Ticker ticker2Hz;
 Ticker ticker10Hz;
+
 /* Global Variables */
 Txtmng Var, Var_0;
 bool emergency_led_state = true;
@@ -273,7 +274,7 @@ void Comfort_Animation()
     else
       u8g2.drawStr(20, 20, "   "); 
         
-    //Speedometer
+    // Speedometer
     u8g2.setFont(u8g2_font_inb30_mn);           //Font 27 pixels high
     u8g2.drawStr((DisplayWidth-u8g2.getStrWidth(Speed))/2, 35, Speed);
   
@@ -350,12 +351,6 @@ void LedFuel()
 void LedEmergency()
 {
   uint8_t intensity_led_brightness = map(pot, 0, 4095, 1, 255); // Emergency LED brightness control;
-  //Leds de Emergência
-  //O potenciometro foi feito uma gabiarra horrorosa colocando um poteciometro em paralelo com um outro resistor
-  //Se possivel alterar a alimentação do potenciometro no deskboar para 3.3V
-  
-  //pelo resistor em paralelo tem um registro mais linear dos valores menores 
-  //enquanto com o aumento do valor é quase que exponencial em um potenciometro do tipo B
   
   // Control of the Engine temperature emergency light     
   if(Var.temp_motor > Alert_TempMOT)
@@ -380,10 +375,10 @@ void LedEmergency()
 void FourDigits() 
 {
   uint8_t intensity_led_brightness = map(pot, 0, 4095, 1, 7); // Emergency LED brightness control;
-  //control of the 4-digit and 7-segment display to display the RPM
-  //setup Four digits display
-  Four.setBrightness(intensity_led_brightness);   //display brightness control
-  //Four.showNumberDecEx(Var.rpm*6, 0, true);       //value displayed on the display true is for if 0s are to be considered
+
+  // Control of the 4-digit and 7-segment display to display the RPM
+  Four.setBrightness(intensity_led_brightness);     // Display brightness control
+  //Four.showNumberDecEx(Var.rpm*6, 0, true);       // Value displayed on the display true is for if 0s are to be considered
   Four.showNumberDecEx(Var.rpm, 0, true);
 }
 
@@ -507,7 +502,7 @@ void Battery_box(uint8_t cor)
   u8g2.setDrawColor(!cor);
   u8g2.drawBox(x, DisplayHight-y-4*(y+1)-1, DisplayWidth - 2*x+2, 5*(y+1));
   
-  //dashed battery icon
+  // Dashed battery icon
   if(Var.battery >= 0)
   {      
     u8g2.setDrawColor(cor);
