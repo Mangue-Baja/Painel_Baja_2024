@@ -163,7 +163,7 @@ void Pinconfig()
   pinMode(POTENTIOMETER, INPUT);
 
   // Tickers
-  ticker2Hz.attach(0.5,  ticker2HzISR);
+  ticker2Hz.attach(0.5, ticker2HzISR);
   ticker10Hz.attach(0.1, ticker10HzISR);
 
   // Interruptions
