@@ -38,7 +38,7 @@
 #define Alert_TempMOT       105   // Estimated temperature for engine temperature problems
 
 // Serial Communication with the Front ECU (MMI)
-#define Receiver_Rxd_pin    16    // Blue
-#define Receiver_Txd_pin    17    // Yellow
+#define Receiver_Rxd_pin    17    // Blue
+#define Receiver_Txd_pin    16    // Yellow
 
 #endif
