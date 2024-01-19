@@ -1,7 +1,10 @@
 #ifndef HARD_DEF
 #define HARD_DEF
 
-#include <Arduino.h>
+/*=============================*/
+       #include <Arduino.h>
+/*=============================*/
+
 
 // Four digits display
 #define Fourdigits_DIO      15     // 4-digit display DATA
