@@ -1,5 +1,5 @@
-#ifndef HARD_DEF
-#define HARD_DEF
+#ifndef HARD_DEFS_H
+#define HARD_DEFS_H
 
 /*==================================*/
        #include <Arduino.h>
