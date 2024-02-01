@@ -50,7 +50,8 @@ void Battery_box(uint8_t cor);
 void setup()
 {
   Serial.begin(115200);      // Define and start serial monitor
-  Receiver.begin(115200, SERIAL_8N1, Receiver_Txd_pin, Receiver_Rxd_pin);   // Define and start Receiver serial port
+  // Define and start Receiver serial port
+  Receiver.begin(115200, SERIAL_8N1, Receiver_Txd_pin/*In RX wire*/, Receiver_Rxd_pin/*In Tx wire*/);   
 
   // Setup Six digits display
   Six.setBrightness(BRIGHT_HIGH);
