@@ -183,7 +183,6 @@ void Receiver_Data()
 
   while(byteCount < sizeof(Txtmng))
   {
-
     data_arr[byteCount] = Receiver.read(); //then the data in bits that arrives from the serial is placed in the array
     //Serial.printf("\r\nData = %d => c = %d\r\n", data_arr[byteCount], byteCount);
 
