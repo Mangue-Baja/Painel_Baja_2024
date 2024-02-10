@@ -1,9 +1,7 @@
 #ifndef SOFT_DEFS_H
 #define SOFT_DEFS_H
 
-/*=============================*/
-      #include "hard_defs.h"
-/*=============================*/
+#include "hard_defs.h"
 
 typedef struct {
   uint16_t seconds = 0;

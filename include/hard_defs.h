@@ -1,11 +1,8 @@
 #ifndef HARD_DEFS_H
 #define HARD_DEFS_H
 
-/*==================================*/
-       #include <Arduino.h>
-       #include <driver/gpio.h>
-/*==================================*/
-
+#include <Arduino.h>
+#include <driver/gpio.h>
 
 // Four digits display
 #define Fourdigits_DIO      GPIO_NUM_15     // 4-digit display DATA

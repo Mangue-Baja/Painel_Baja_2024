@@ -1,9 +1,7 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-/*=============================*/
-      #include "soft_defs.h"
-/*=============================*/
+#include "soft_defs.h"
 
 #define GRAUS_SYM   "\u00b0"
 #define WIFI_SYM    "\u00f7"
