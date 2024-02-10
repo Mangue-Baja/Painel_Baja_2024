@@ -134,13 +134,13 @@ void loop()
 /* Setup functions */
 void SetupPacket()
 {
-  Var.speed = 0;
-  Var.rpm = 0;
-  Var.battery = 0;
-  Var.level = 0;
-  Var.temp_cvt = 0;
+  Var.speed      = 0;
+  Var.rpm        = 0;
+  Var.battery    = 0;
+  Var.level      = 0;
+  Var.temp_cvt   = 0;
   Var.temp_motor = 0;
-  Var.sot = 0;
+  Var.sot        = 0;
 }
 
 void Pinconfig()
@@ -254,7 +254,7 @@ void Comfort_Animation()
     u8g2.drawStr(37, DisplayHight, "C");       //cvt
     u8g2.drawStr(86, 33, "Km/h");
     
-    if(Var.sot==1 || Var.sot==3) 
+    if((Var.sot & 0x01)==0x01) 
     {
       // Conectivity symbol
       u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
@@ -262,25 +262,25 @@ void Comfort_Animation()
       u8g2.print(WIFI_SYM);             
     }
 
-    else if((Var.sot&=~(0x03))==0x04)
+    else if((Var.sot & 0x04)==0x04)
     {
       // Conectivity error symbol 
-      u8g2.setFont(u8g2_font_7x13_t_cyrillic);
-      u8g2.setCursor(10-2,18);
-      u8g2.print("!");
+      u8g2.setFont(u8g2_font_crox4h_tf);
+      //u8g2.setCursor(10,18);
+      u8g2.drawStr(10-7, 16, "!");
       u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
       u8g2.setCursor(10,18);
       u8g2.print(WIFI_SYM);
     }
       
     else
-    { 
+    {   
       u8g2.drawStr(10, 20, "  "); 
     } 
 
     u8g2.setFont(u8g2_font_7x13_t_cyrillic);
 
-    if(Var.sot==2 || Var.sot==3)
+    if((Var.sot & 0x02)==0x02)
       u8g2.drawStr(6, 33, "4x4");
     else
       u8g2.drawStr(20, 20, "   "); 
