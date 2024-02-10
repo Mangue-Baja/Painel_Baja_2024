@@ -261,6 +261,17 @@ void Comfort_Animation()
       u8g2.setCursor(10,18);
       u8g2.print(WIFI_SYM);             
     }
+
+    else if((Var.sot&=~(0x03))==0x04)
+    {
+      // Conectivity error symbol 
+      u8g2.setFont(u8g2_font_7x13_t_cyrillic);
+      u8g2.setCursor(10-2,18);
+      u8g2.print("!");
+      u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
+      u8g2.setCursor(10,18);
+      u8g2.print(WIFI_SYM);
+    }
       
     else
     { 
