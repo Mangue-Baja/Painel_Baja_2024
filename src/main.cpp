@@ -222,36 +222,36 @@ void Comfort_Animation()
   static char T_motor[6];
 
   //debounceSpeed();
-  strcpy(Speed, u8x8_u8toa(Var.speed, 2));    //speed variable that will be displayed on the Oled with 2 digits
-  strcpy(T_cvt, u8x8_u8toa(Var.temp_cvt, 3));      //CVT temperature variable that will be displayed on the OLED with 3 digits
-  strcpy(T_motor, u8x8_u8toa(Var.temp_motor, 3));  //Motor temperature variable that will be displayed on the OLED with 3 digits
+  strcpy(Speed, u8x8_u8toa(Var.speed, 2));         // Speed variable that will be displayed on the Oled with 2 digits
+  strcpy(T_cvt, u8x8_u8toa(Var.temp_cvt, 3));      // CVT temperature variable that will be displayed on the OLED with 3 digits
+  strcpy(T_motor, u8x8_u8toa(Var.temp_motor, 3));  // Motor temperature variable that will be displayed on the OLED with 3 digits
 
   u8g2.firstPage();
   do {
 
-    u8g2.setFontMode(1);                //dark background color I don't recommend changing (this is already the best aesthetic combination)
+    u8g2.setFontMode(1);                // Dark background color I don't recommend changing (this is already the best aesthetic combination)
     u8g2.setDrawColor(Background);              
     u8g2.drawBox(0, 0, DisplayWidth+4, DisplayHight);
     u8g2.setDrawColor(2);
 
     //Display engine temperature and CVT temperature
-    u8g2.setFont(u8g2_font_crox2c_tn);          //Font 13 pixels high
-    u8g2.drawStr(79, DisplayHight, T_motor);    //Motor value
-    u8g2.drawStr(0, DisplayHight, T_cvt);       //CVT value
+    u8g2.setFont(u8g2_font_crox2c_tn);          // Font 13 pixels high
+    u8g2.drawStr(79, DisplayHight, T_motor);    // Motor value
+    u8g2.drawStr(0, DisplayHight, T_cvt);       // CVT value
 
-    u8g2.setFont(u8g2_font_5x8_tf);        //Font
+    u8g2.setFont(u8g2_font_5x8_tf);             //Font
     u8g2.drawStr(10, 50, "CVT");
     u8g2.drawStr(83, 50, "Motor");
 
     //graus celcius
     u8g2.setFont(u8g2_font_6x12_me);
     u8g2.setCursor(110, DisplayHight);
-    u8g2.print(GRAUS_SYM);                     //Degree symbol
+    u8g2.print(GRAUS_SYM);                      // Degree symbol
     u8g2.setCursor(30, DisplayHight);
     u8g2.print(GRAUS_SYM);
-    u8g2.setFont(u8g2_font_7x13_t_cyrillic);   //Font 9 pixels high
-    u8g2.drawStr(117, DisplayHight, "C");      //motor
-    u8g2.drawStr(37, DisplayHight, "C");       //cvt
+    u8g2.setFont(u8g2_font_7x13_t_cyrillic);   // Font 9 pixels high
+    u8g2.drawStr(117, DisplayHight, "C");      // Motor
+    u8g2.drawStr(37, DisplayHight, "C");       // CVT
     u8g2.drawStr(86, 33, "Km/h");
     
     if((Var.sot & 0x01)==0x01) 
@@ -286,7 +286,7 @@ void Comfort_Animation()
       u8g2.drawStr(20, 20, "   "); 
         
     // Speedometer
-    u8g2.setFont(u8g2_font_inb30_mn);           //Font 27 pixels high
+    u8g2.setFont(u8g2_font_inb30_mn);           // Font 27 pixels high
     u8g2.drawStr((DisplayWidth-u8g2.getStrWidth(Speed))/2, 35, Speed);
   
     Battery_box(!Background);
@@ -376,10 +376,10 @@ void LedEmergency()
     digitalWrite(CVTtemp_led, LOW);
 
   // Battery emergency light control
-  if(Var.battery <= 20)
+  if(Var.battery <= 20 && millis() > 3200)
     analogWrite(Battery_led, emergency_led_state*intensity_led_brightness);
   else
-    digitalWrite(Battery_led, LOW);
+    analogWrite(Battery_led, 0); //digitalWrite(Battery_led, LOW);
 }
 
 // Display Segments Functions
