@@ -376,7 +376,7 @@ void LedEmergency()
     digitalWrite(CVTtemp_led, LOW);
 
   // Battery emergency light control
-  if(Var.battery <= 20 && millis() > 3200)
+  if(Var.battery <= 20)
     analogWrite(Battery_led, emergency_led_state*intensity_led_brightness);
   else
     analogWrite(Battery_led, 0); //digitalWrite(Battery_led, LOW);
