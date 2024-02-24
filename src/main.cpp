@@ -32,20 +32,14 @@ void SetupPacket();
 void Pinconfig();
 /* General functions */
 void Receiver_Data(); // Receiver Function
- // Leds Functions 
 void Leds_State();
 void Comfort_Animation(); // Comfort design animation Function
-//void Sport_Animation();   // Sport design animation Function
 void LedFuel();
 void LedEmergency();
- // Display Functions
 void FourDigits();
 void SixDigits();
 void Transform_time_current(Time *T);
-//void debounceSpeed();
 void Battery_box(uint8_t cor);
-//void all_lines(int cor);
-//void doublelines(int x1,int y1,int x2,int y2,int quantidade);
 
 void setup()
 {
@@ -98,34 +92,14 @@ void loop()
   // Here I had to put it in an if else because a bug appeared when placing the receiver() in the same loop as the animation()
   if(Receiver.available() > 0)
   {    
-    Receiver_Data();      // Receives serial data from the front ECU
+    // Receives serial data from the front ECU
+    Receiver_Data();      
   } 
   
   else
   {
     Leds_State();      // Function that contains all LEDs
-
-    //if(Mode_Sport)
-    //{
-    //  if(Switch.lastButtonState)
-    //  {
-    //    u8g2.clearDisplay();
-    //    Switch.lastButtonState = false;
-    //  }
-
-    //  Sport_Animation();
-    //}
-
-    //else
-    //{
-    //  if(Switch.lastButtonState)
-    //  {
-    //    u8g2.clearDisplay();
-    //    Switch.lastButtonState = false;
-    //  }
-
-      Comfort_Animation();       // Oled animation
-    //}
+    Comfort_Animation();       // Oled animation
   }
 
   Var_0 = Var;
@@ -294,12 +268,6 @@ void Comfort_Animation()
   } while(u8g2.nextPage());
 }
 
-/*void Sport_Animation()
-{
-  delay(1);
-}*/
-
-/* General Functions */
 // Led functions
 void LedFuel()
 {
@@ -542,7 +510,7 @@ void Battery_box(uint8_t cor)
 /* Interrupts routine */
 void ButtonInterruptISR()
 {
-  if(/*Mode_Sport*/ six_digits_state==STOPWATCH)
+  if(six_digits_state==STOPWATCH)
   {  
     if((millis() - lastDebounceTime) > debounceDelay-50) 
     {
@@ -581,7 +549,7 @@ void ButtonInterruptISR()
 }*/
 
 void ticker2HzISR() 
-{  
+{
   emergency_led_state = !emergency_led_state;
 
   /* This flag is activated after the ticker 0.5 is called 2 times (2*0.5 == 1) */
@@ -606,10 +574,11 @@ void ticker2HzISR()
         Endurance.hours++;
             
         if(Endurance.hours > 24)
+        {
           Endurance.hours = 0;
+        }
       }
     }
-
     boolean1HZ &= ~0x01;
   }
 }
@@ -618,73 +587,3 @@ void ticker10HzISR()
 {
   boolean10HZ = true;
 }
-            
-/* Useless, only for backup */
-/*void doublelines(int x1,int y1,int x2,int y2,int quantidade)
-{  
-  u8g2.drawLine(x1,y1,x2,y2);
-  u8g2.drawLine(DisplayWidth-x1,y1,DisplayWidth-x2,y2);
-  
-  if (quantidade >= 2)
-  {
-    //linha da direita
-    u8g2.drawLine(x1+1,y1,x2+1,y2);
-    //linha da esquerda
-    u8g2.drawLine(DisplayWidth-x1-1,y1,DisplayWidth-x2-1,y2);
-  }
-
-  if (quantidade >= 3)
-  {
-    //linha da direita
-    u8g2.drawLine(x1+2,y1,x2+2,y2);
-    //linha da esquerda
-    u8g2.drawLine(DisplayWidth-x1-2,y1,DisplayWidth-x2-2,y2);
-  }
-};*/
-
-/*void all_lines(int cor)
-{
-  u8g2.setDrawColor(cor);
-  u8g2.drawBox(40, DisplayHight-20, 40, 10);
-
-  u8g2.setDrawColor(2);
-};*/
-
-/*void debounceSpeed()
-{
-  //speed filter for accelerations
-  uint16_t deltaV;
-
-  if (Var_0.speed < Var.speed)
-  {
-    deltaV = Var.speed - Var_0.speed;
-
-    if (deltaV>2)
-    {
-
-      Var_0.speed+=3;
-      
-    } else {
-
-      Var_0.speed+=1;
-    
-    }
-  }
-
-  if (Var_0.speed > Var.speed)
-  {
- 
-    deltaV = Var_0.speed - Var.speed;
-
-    if (deltaV>2)
-    {
-
-      Var_0.speed-=3;
-
-    } else {
-        
-      Var_0.speed-=1;
-
-    }
-  }
-}*/
