@@ -48,6 +48,6 @@ const int debounceDelay = 200;          // Time in milliseconds for button debou
 
 typedef enum PROGMEM {ENDURANCE_TIMER, STOPWATCH, DELTA_CRONOMETRO} tempo_six_digits;
 
-byte six_digits_state = ENDURANCE_TIMER;
+uint8_t six_digits_state = ENDURANCE_TIMER;
 
 #endif
