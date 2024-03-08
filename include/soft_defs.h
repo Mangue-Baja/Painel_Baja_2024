@@ -13,8 +13,7 @@ typedef struct {
 
 } Time;
 
-Time Endurance;
-Time Lap;
+Time Endurance, Lap;
 //Tempo penultima_volta;
 //Tempo ultima_volta;
 //Tempo Delta;
