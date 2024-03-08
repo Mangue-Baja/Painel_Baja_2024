@@ -347,7 +347,7 @@ void LedEmergency()
   if(Var.battery <= 20)
     analogWrite(Battery_led, emergency_led_state*intensity_led_brightness);
   else
-    analogWrite(Battery_led, 0); //digitalWrite(Battery_led, LOW);
+    analogWrite(Battery_led, LOW); //digitalWrite(Battery_led, LOW);
 }
 
 // Display Segments Functions
