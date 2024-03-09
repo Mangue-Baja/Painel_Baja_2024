@@ -6,8 +6,6 @@
 #include <U8g2lib.h>
 /* User Libraries */
 #include "definitions.h"
-#include "hard_defs.h"
-#include "soft_defs.h"
 
 /* ESP Tools */
 Ticker ticker2Hz;

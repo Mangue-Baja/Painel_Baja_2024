@@ -13,10 +13,8 @@ typedef struct {
 
 } Time;
 
-Time Endurance, Lap;
-//Tempo penultima_volta;
-//Tempo ultima_volta;
-//Tempo Delta;
+Time Endurance;
+Time Lap;
 
 typedef struct {
   uint8_t Pin = SWITCH;
